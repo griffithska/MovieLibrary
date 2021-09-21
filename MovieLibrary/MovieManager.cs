@@ -1,0 +1,29 @@
+using System.Collections.Generic;
+using NLog;
+using NLog.Web;
+
+namespace MovieLibrary
+{
+    public class MovieManager
+    {
+        private readonly Logger _logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+
+        public MovieManager()
+        {
+            Movies = new List<Movie>();
+        }
+
+        public List<Movie> Movies { get; set; }
+
+        public bool DuplicateTitle(string title)
+        {
+            if (Movies.ConvertAll(m => m.Title.ToLower()).Contains(title.ToLower()))
+            {
+                _logger.Info("Duplicate movie title {Title}", title);
+                return true;
+            }
+
+            return false;
+        }
+    }
+}
