@@ -29,16 +29,20 @@ namespace MovieLibrary
             }
         }
 
-        // public static void AddRecord(Movie movie)
-        // {
-        //     using (var writer = new StreamWriter("path\\to\\file.csv"))
-        //     {
-        //         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-        //         {
-        //             csv.Context.RegisterClassMap<MovieMap>();
-        //             csv.WriteRecords(movie);
-        //         }
-        //     }
-        // }
+        public static void AddRecord(MovieRaw movie, string file)
+        {
+            using (var stream = File.Open(file, FileMode.Append))
+            {
+                using (var writer = new StreamWriter(stream))
+                {
+                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        writer.Write("\n");
+                        csv.Context.RegisterClassMap<MovieMap>();
+                        csv.WriteRecord(movie);
+                    }
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using NLog.Web;
+using System.Linq;
 
 namespace MovieLibrary
 {
@@ -37,7 +39,7 @@ namespace MovieLibrary
 
                     if (choice == "1")
                     {
-                        Movie movie = new Movie();
+                        MovieRaw movie = new MovieRaw();
                         Console.WriteLine("Enter movie title: ");
                         movie.Title = Console.ReadLine();
                         if (movieManager.DuplicateTitle(movie.Title))
@@ -48,6 +50,7 @@ namespace MovieLibrary
                         {
                             // input genres
                             string input;
+                            List<string> genreList = new List<string>();
                             movie.MovieId = movieManager.NewMovieId();
                             do
                             {
@@ -59,16 +62,18 @@ namespace MovieLibrary
                                 // or does not enter a genre do not add it to list
                                 if (input != "done" && input.Length > 0)
                                 {
-                                    movie.Genres.Add(input);
+                                    genreList.Add(input);
                                 }
                             } while (input != "done");
                             // specify if no genres are entered
-                            if (movie.Genres.Count == 0)
+                            if (genreList.Count == 0)
                             {
-                                movie.Genres.Add("(no genres listed)");
+                                genreList.Add("(no genres listed)");
                             }
+                            movie.Genres = (String.Join("|",genreList));
                             // add movie
-                            System.Console.WriteLine(movie.Display());
+                            //System.Console.WriteLine(movie.Display());
+                            CsvFile.AddRecord(movie, file);
                         }
                     }
 
