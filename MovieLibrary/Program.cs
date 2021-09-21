@@ -12,7 +12,7 @@ namespace MovieLibrary
 
             logger.Info("Program started");
 
-            var file = $"{Environment.CurrentDirectory}/data/movies-short.csv";
+            var file = $"{Environment.CurrentDirectory}/MovieLibrary/data/movies-short.csv";
 
             var movieManager = new MovieManager();
             movieManager.Movies = CsvFile.LoadFile(file);
@@ -37,9 +37,39 @@ namespace MovieLibrary
 
                     if (choice == "1")
                     {
+                        Movie movie = new Movie();
                         Console.WriteLine("Enter movie title: ");
-                        var title = Console.ReadLine();
-                        Console.WriteLine(movieManager.DuplicateTitle(title) ? "Duplicate" : "Unique");
+                        movie.Title = Console.ReadLine();
+                        if (movieManager.DuplicateTitle(movie.Title))
+                        {
+                            Console.WriteLine("This movie already exists.");
+                        }
+                        else
+                        {
+                            // input genres
+                            string input;
+                            movie.MovieId = movieManager.NewMovieId();
+                            do
+                            {
+                                // ask user to enter genre
+                                Console.WriteLine("Enter genre (or done to quit)");
+                                // input genre
+                                input = Console.ReadLine();
+                                // if user enters "done"
+                                // or does not enter a genre do not add it to list
+                                if (input != "done" && input.Length > 0)
+                                {
+                                    movie.Genres.Add(input);
+                                }
+                            } while (input != "done");
+                            // specify if no genres are entered
+                            if (movie.Genres.Count == 0)
+                            {
+                                movie.Genres.Add("(no genres listed)");
+                            }
+                            // add movie
+                            System.Console.WriteLine(movie.Display());
+                        }
                     }
 
                     else if (choice == "2")

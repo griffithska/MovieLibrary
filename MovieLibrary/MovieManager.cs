@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using NLog;
 using NLog.Web;
+using System.Linq;
 
 namespace MovieLibrary
 {
@@ -24,6 +25,12 @@ namespace MovieLibrary
             }
 
             return false;
+        }
+
+        public uint NewMovieId()
+        {
+            uint NewId = Movies.Max(m => m.MovieId) + 1;
+            return NewId;
         }
     }
 }

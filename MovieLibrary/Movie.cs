@@ -3,6 +3,12 @@ using CsvHelper.Configuration;
 
 namespace MovieLibrary
 {
+    public class MovieRaw
+    {
+        public uint MovieId { get; set; }
+        public string Title { get; set; }
+        public string Genres { get; set; }
+    }
     public class Movie
     {
         // constructor
