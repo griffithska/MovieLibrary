@@ -17,8 +17,7 @@ namespace MovieLibrary
             var file = $"{Environment.CurrentDirectory}/MovieLibrary/data/movies-short.csv";
 
             var movieManager = new MovieManager();
-            movieManager.Movies = CsvFile.LoadFile(file);
-
+            
             // make sure movie file exists
             if (!File.Exists(file))
             {
@@ -29,6 +28,8 @@ namespace MovieLibrary
                 string choice;
                 do
                 {
+                    movieManager.Movies = CsvFile.LoadFile(file);
+                    
                     // display choices to user
                     Console.WriteLine("1) Add Movie");
                     Console.WriteLine("2) Display All Movies");
@@ -73,7 +74,19 @@ namespace MovieLibrary
                             movie.Genres = (String.Join("|",genreList));
                             // add movie
                             //System.Console.WriteLine(movie.Display());
-                            CsvFile.AddRecord(movie, file);
+                            try
+                            {
+                                 CsvFile.AddRecord(movie, file);
+                                 System.Console.WriteLine("Movie Added");
+                                 System.Console.WriteLine(movie.Display());
+                            }
+                            catch (System.Exception)
+                            {
+                                System.Console.WriteLine("Adding movie failed.");
+                                logger.Error("Adding movie failed.", movie);
+                                throw;
+                            }
+                                
                         }
                     }
 

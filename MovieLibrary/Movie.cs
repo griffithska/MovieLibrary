@@ -8,6 +8,12 @@ namespace MovieLibrary
         public uint MovieId { get; set; }
         public string Title { get; set; }
         public string Genres { get; set; }
+
+        // public method
+        public string Display()
+        {
+            return $"Id: {MovieId}  Title: {Title}  Genres: {Genres}";
+        }
     }
     public class Movie
     {
