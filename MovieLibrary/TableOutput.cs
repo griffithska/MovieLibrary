@@ -5,12 +5,12 @@ namespace MovieLibrary
 {
     public class TableDisplay
     {
-        public static void PrintTable(List<Movie> movies)
+        public static void PrintTable(List<MovieRaw> movies)
         {
             ConsoleTable
                 .From(movies)
                 .Configure(o => o.NumberAlignment = Alignment.Right)
-                .Write();
+                .Write(Format.MarkDown);
         }
     }
 }

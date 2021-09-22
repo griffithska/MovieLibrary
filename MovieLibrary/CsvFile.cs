@@ -8,14 +8,14 @@ namespace MovieLibrary
 {
     public class CsvFile
     {
-        public static List<Movie> LoadFile(string file)
+        public static List<MovieRaw> LoadFile(string file)
         {
             using (var reader = new StreamReader(file))
             {
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<MovieMap>();
-                    var records = csv.GetRecords<Movie>().ToList(); //MovieRaw?
+                    var records = csv.GetRecords<MovieRaw>().ToList(); //MovieRaw?
                     return records;
                     // var movies = new List<Movie>();
                     // foreach (var mov in records)

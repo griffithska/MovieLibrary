@@ -34,7 +34,7 @@ namespace MovieLibrary
             return $"Id: {MovieId}  Title: {Title}  Genres: {string.Join(", ", Genres)}";
         }
     }
-    public class MovieMap : ClassMap<Movie>
+    public class MovieMap : ClassMap<MovieRaw>
     {
         public MovieMap()
         {

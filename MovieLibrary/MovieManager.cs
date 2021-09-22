@@ -11,10 +11,10 @@ namespace MovieLibrary
 
         public MovieManager()
         {
-            Movies = new List<Movie>();
+            Movies = new List<MovieRaw>();
         }
 
-        public List<Movie> Movies { get; set; }
+        public List<MovieRaw> Movies { get; set; }
 
         public bool DuplicateTitle(string title)
         {

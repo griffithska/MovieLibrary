@@ -14,7 +14,7 @@ namespace MovieLibrary
 
             logger.Info("Program started");
 
-            var file = $"{Environment.CurrentDirectory}/MovieLibrary/data/movies-short.csv";
+            var file = $"{Environment.CurrentDirectory}/MovieLibrary/data/movies.csv";
 
             var movieManager = new MovieManager();
             
@@ -29,7 +29,7 @@ namespace MovieLibrary
                 do
                 {
                     movieManager.Movies = CsvFile.LoadFile(file);
-                    
+
                     // display choices to user
                     Console.WriteLine("1) Add Movie");
                     Console.WriteLine("2) Display All Movies");
