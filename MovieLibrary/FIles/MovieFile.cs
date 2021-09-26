@@ -3,10 +3,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper;
+using MovieLibrary.Models;
 
-namespace MovieLibrary
+namespace MovieLibrary.Files
 {
-    public class CsvFile
+    public class MovieFile
     {
         public static List<MovieRaw> LoadFile(string file)
         {
@@ -17,14 +18,6 @@ namespace MovieLibrary
                     csv.Context.RegisterClassMap<MovieMap>();
                     var records = csv.GetRecords<MovieRaw>().ToList(); //MovieRaw?
                     return records;
-                    // var movies = new List<Movie>();
-                    // foreach (var mov in records)
-                    // {
-                    //     movies.MovieId.Add(mov.MovieId);
-                    //     movies.Title.Add(mov.Title);
-                    //     movies.Genres.Add(mov.Genres.Split('|').ToList());
-                    // }
-                    // return movies;
                 }
             }
         }

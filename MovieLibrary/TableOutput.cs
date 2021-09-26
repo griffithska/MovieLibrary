@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ConsoleTables;
+using MovieLibrary.Models;
 
 namespace MovieLibrary
 {

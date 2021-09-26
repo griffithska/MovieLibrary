@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections.Generic;
 using NLog.Web;
 using System.Linq;
+using MovieLibrary.Models;
+using MovieLibrary.Files;
 
 namespace MovieLibrary
 {
@@ -14,91 +16,67 @@ namespace MovieLibrary
 
             logger.Info("Program started");
 
-            var file = $"{Environment.CurrentDirectory}/MovieLibrary/data/movies.csv";
+            string file;
+            string choice;
 
-            var movieManager = new MovieManager();
-            
-            // make sure movie file exists
-            if (!File.Exists(file))
+            do
             {
-                logger.Error("File does not exist: {File}", file);
-            }
-            else
-            {
-                string choice;
-                do
+                //movieManager.Movies = CsvFile.LoadFile(file);
+
+                // display choices to user
+                Console.WriteLine("1) Display Movies");
+                Console.WriteLine("2) Display Shows");
+                Console.WriteLine("3) Display Videos");
+                Console.WriteLine("Press Enter to quit");
+                choice = Console.ReadLine();
+
+                logger.Info("User choice: {Choice}", choice);
+
+                string type = choice == "1" ? "Movies" : choice == "2" ? "Shows" : choice == "3" ? "Videos" : "Unknown";
+                file = Path.Combine(Environment.CurrentDirectory, "data", type.ToLower()) + ".csv";
+                // make sure movie file exists
+                if (!File.Exists(file))
                 {
-                    movieManager.Movies = CsvFile.LoadFile(file);
-
-                    // display choices to user
-                    Console.WriteLine("1) Add Movie");
-                    Console.WriteLine("2) Display All Movies");
-                    Console.WriteLine("Press Enter to quit");
-                    choice = Console.ReadLine();
-
-                    logger.Info("User choice: {Choice}", choice);
-
+                    Console.WriteLine("File does not exist");
+                    logger.Error("File does not exist: {File}", file);
+                }
+                else
+                {
+                    Console.WriteLine(file);
                     if (choice == "1")
                     {
-                        MovieRaw movie = new MovieRaw();
-                        Console.WriteLine("Enter movie title: ");
-                        movie.Title = Console.ReadLine();
-                        if (movieManager.DuplicateTitle(movie.Title))
+                        //Tried making this work and it isn't
+                        //Maybe I'm overestimating what I can do with abstraction/polymorphism?
+                        //List<Media> movies = new List<MovieRaw>();
+                        List<MovieRaw> movies = new List<MovieRaw>();
+                        movies = MovieFile.LoadFile(file);
+                        foreach (var m in movies)
                         {
-                            Console.WriteLine("This movie already exists.");
-                        }
-                        else
-                        {
-                            // input genres
-                            string input;
-                            List<string> genreList = new List<string>();
-                            movie.MovieId = movieManager.NewMovieId();
-                            do
-                            {
-                                // ask user to enter genre
-                                Console.WriteLine("Enter genre (or done to quit)");
-                                // input genre
-                                input = Console.ReadLine();
-                                // if user enters "done"
-                                // or does not enter a genre do not add it to list
-                                if (input != "done" && input.Length > 0)
-                                {
-                                    genreList.Add(input);
-                                }
-                            } while (input != "done");
-                            // specify if no genres are entered
-                            if (genreList.Count == 0)
-                            {
-                                genreList.Add("(no genres listed)");
-                            }
-                            movie.Genres = (String.Join("|",genreList));
-                            // add movie
-                            //System.Console.WriteLine(movie.Display());
-                            try
-                            {
-                                 CsvFile.AddRecord(movie, file);
-                                 System.Console.WriteLine("Movie Added");
-                                 System.Console.WriteLine(movie.Display());
-                            }
-                            catch (System.Exception)
-                            {
-                                System.Console.WriteLine("Adding movie failed.");
-                                logger.Error("Adding movie failed.", movie);
-                                throw;
-                            }
-                                
+                            Console.WriteLine(m.Display()); 
                         }
                     }
-
                     else if (choice == "2")
                     {
-                        TableDisplay.PrintTable(movieManager.Movies);
-
-                        Console.WriteLine("Press Enter to continue");
-                        Console.ReadLine();
+                        Console.WriteLine(file);
+                        List<ShowRaw> shows = new List<ShowRaw>();
+                        shows = ShowFile.LoadFile(file);
+                        foreach (var s in shows)
+                        {
+                            Console.WriteLine(s.Display());
+                        }
                     }
-                } while (choice == "1" || choice == "2");
-            }
+                    else if (choice == "3")
+                    {
+                        Console.WriteLine(file);
+                        List<VideoRaw> videos = new List<VideoRaw>();
+                        videos = VideoFile.LoadFile(file);
+                        foreach (var v in videos)
+                        {
+                            Console.WriteLine(v.Display());
+                        }
+                    }
+                }
+            } while (choice == "1" || choice == "2" || choice == "3");
 
             logger.Info("Program ended");
         }

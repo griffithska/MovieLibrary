@@ -11,7 +11,7 @@ namespace MovieLibrary.Tests
         {
             var file = "C:/Git/MovieLibrary/MovieLibrary/data/movies-short.csv";
             var movieManager = new MovieManager();
-            movieManager.Movies = CsvFile.LoadFile(file);
+            movieManager.Movies = MovieFile.LoadFile(file);
             
             bool result = movieManager.DuplicateTitle("Toy Story (1995)");
 
@@ -23,7 +23,7 @@ namespace MovieLibrary.Tests
         {
             var file = "C:/Git/MovieLibrary/MovieLibrary/data/movies-short.csv";
             var movieManager = new MovieManager();
-            movieManager.Movies = CsvFile.LoadFile(file);
+            movieManager.Movies = MovieFile.LoadFile(file);
             
             bool result = movieManager.DuplicateTitle("Fake Title");
 
