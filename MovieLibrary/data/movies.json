@@ -1,0 +1,22 @@
+[
+  {
+    "movieId": 1,
+    "title": "My Movie",
+    "genres": [ "Horror", "Action" ]
+  },
+  {
+    "movieId": 2,
+    "title": "Your Movie",
+    "genres": [ "Drama" ]
+  },
+  {
+    "movieId": 3,
+    "title": "Toy Story (1995)",
+    "genres": [ "Adventure", "Animation", "Children", "Comedy", "Fantasy" ]
+  },
+  {
+    "movieId": 4,
+    "title": "Jumanji (1995)",
+    "genres": [ "Adventure", "Children", "Fantasy" ]
+  }
+]
