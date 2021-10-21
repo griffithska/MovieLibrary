@@ -5,7 +5,7 @@ namespace MovieLibrary
 {
     public class TableDisplay
     {
-        public static void PrintTable(List<MovieRaw> movies)
+        public static void PrintTable(List<Movie> movies)
         {
             ConsoleTable
                 .From(movies)

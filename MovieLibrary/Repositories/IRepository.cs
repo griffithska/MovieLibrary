@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MovieLibrary.Repositories
 {
@@ -10,7 +6,7 @@ namespace MovieLibrary.Repositories
     {
         public string file { get; set; }
 
-        List<MovieRaw> LoadFile(string file);
-        void AddRecord(MovieRaw movie, string file);
+        List<Movie> LoadFile(string file);
+        void AddRecord(List<Movie> movie, string file);
     }
 }

@@ -10,14 +10,14 @@ namespace MovieLibrary.Repositories
     {
         public string file { get; set; }
 
-        public List<MovieRaw> LoadFile(string file)
+        public List<Movie> LoadFile(string file)
         {
             using (var reader = new StreamReader(file))
             {
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<MovieMap>();
-                    var records = csv.GetRecords<MovieRaw>().ToList(); //MovieRaw?
+                    var records = csv.GetRecords<Movie>().ToList(); //MovieRaw?
                     return records;
                     // var movies = new List<Movie>();
                     // foreach (var mov in records)
@@ -31,7 +31,7 @@ namespace MovieLibrary.Repositories
             }
         }
 
-        public void AddRecord(MovieRaw movie, string file)
+        public void AddRecord(List<Movie> movie, string file)
         {
             using (var stream = File.Open(file, FileMode.Append))
             {

@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using NLog.Web;
-using System.Linq;
 using MovieLibrary.Repositories;
 
 namespace MovieLibrary
@@ -15,7 +14,7 @@ namespace MovieLibrary
 
             logger.Info("Program started");
 
-            var file = Path.Combine(Environment.CurrentDirectory, "data", "movies") + ".csv";
+            var file = Path.Combine(Environment.CurrentDirectory, "data", "movies") + ".json";
 
             var movieManager = new MovieManager();
             
@@ -30,7 +29,7 @@ namespace MovieLibrary
                 string choice;
                 do
                 {
-                    IRepository repo = new CsvFile();
+                    IRepository repo = new JsonFile();
                     movieManager.Movies = repo.LoadFile(file);
 
                     // display choices to user
@@ -43,7 +42,7 @@ namespace MovieLibrary
 
                     if (choice == "1")
                     {
-                        MovieRaw movie = new MovieRaw();
+                        Movie movie = new Movie();
                         Console.WriteLine("Enter movie title: ");
                         movie.Title = Console.ReadLine();
                         if (movieManager.DuplicateTitle(movie.Title))
@@ -74,14 +73,15 @@ namespace MovieLibrary
                             {
                                 genreList.Add("(no genres listed)");
                             }
-                            movie.Genres = (String.Join("|",genreList));
+                            movie.Genres = genreList;
                             // add movie
                             //System.Console.WriteLine(movie.Display());
                             try
                             {
-                                 repo.AddRecord(movie, file);
-                                 System.Console.WriteLine("Movie Added");
-                                 System.Console.WriteLine(movie.Display());
+                                movieManager.Movies.Add(movie);
+                                repo.AddRecord(movieManager.Movies, file);
+                                System.Console.WriteLine("Movie Added");
+                                System.Console.WriteLine(movie.Display());
                             }
                             catch (System.Exception)
                             {
@@ -95,7 +95,11 @@ namespace MovieLibrary
 
                     else if (choice == "2")
                     {
-                        TableDisplay.PrintTable(movieManager.Movies);
+                        //TableDisplay.PrintTable(movieManager.Movies);
+                        foreach(Movie m in movieManager.Movies)
+                        {
+                            Console.WriteLine(m.Display());
+                        }
 
                         Console.WriteLine("Press Enter to continue");
                         Console.ReadLine();
