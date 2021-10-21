@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using NLog.Web;
 using System.Linq;
+using MovieLibrary.Repositories;
 
 namespace MovieLibrary
 {
@@ -14,7 +15,7 @@ namespace MovieLibrary
 
             logger.Info("Program started");
 
-            var file = $"{Environment.CurrentDirectory}/MovieLibrary/data/movies.csv";
+            var file = Path.Combine(Environment.CurrentDirectory, "data", "movies") + ".csv";
 
             var movieManager = new MovieManager();
             
@@ -22,13 +23,15 @@ namespace MovieLibrary
             if (!File.Exists(file))
             {
                 logger.Error("File does not exist: {File}", file);
+                Console.WriteLine("File does not exist: {File}", file);
             }
             else
             {
                 string choice;
                 do
                 {
-                    movieManager.Movies = CsvFile.LoadFile(file);
+                    IRepository repo = new CsvFile();
+                    movieManager.Movies = repo.LoadFile(file);
 
                     // display choices to user
                     Console.WriteLine("1) Add Movie");
@@ -76,7 +79,7 @@ namespace MovieLibrary
                             //System.Console.WriteLine(movie.Display());
                             try
                             {
-                                 CsvFile.AddRecord(movie, file);
+                                 repo.AddRecord(movie, file);
                                  System.Console.WriteLine("Movie Added");
                                  System.Console.WriteLine(movie.Display());
                             }

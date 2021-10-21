@@ -4,11 +4,13 @@ using System.IO;
 using System.Linq;
 using CsvHelper;
 
-namespace MovieLibrary
+namespace MovieLibrary.Repositories
 {
-    public class CsvFile
+    public class CsvFile : IRepository
     {
-        public static List<MovieRaw> LoadFile(string file)
+        public string file { get; set; }
+
+        public List<MovieRaw> LoadFile(string file)
         {
             using (var reader = new StreamReader(file))
             {
@@ -29,7 +31,7 @@ namespace MovieLibrary
             }
         }
 
-        public static void AddRecord(MovieRaw movie, string file)
+        public void AddRecord(MovieRaw movie, string file)
         {
             using (var stream = File.Open(file, FileMode.Append))
             {
