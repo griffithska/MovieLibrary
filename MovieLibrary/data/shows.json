@@ -1,0 +1,72 @@
+[
+ {
+   "showId": 1,
+   "title": "Supernatural",
+   "season": 2,
+   "episode": 12,
+   "writers": [ "Kripke" ]
+ },
+ {
+   "showId": 2,
+   "title": "Scrubs",
+   "season": 3,
+   "episode": 8,
+   "writers": [ "Lawrence", "Allan", "Bakken" ]
+ },
+ {
+   "showId": 3,
+   "title": "Ted Lasso",
+   "season": 2,
+   "episode": 10,
+   "writers": [ "Sudeikis", "Lawrence", "Hunt" ]
+ },
+ {
+   "showId": 4,
+   "title": "Succession",
+   "season": 1,
+   "episode": 7,
+   "writers": [ "Armstrong", "Prebble", "Stanton" ]
+ },
+ {
+   "showId": 5,
+   "title": "Breaking Bad",
+   "season": 5,
+   "episode": 14,
+   "writers": [ "Gilligan", "Walley-Beckett" ]
+ },
+ {
+   "showId": 6,
+   "title": "Star Wars: The Clone Wars",
+   "season": 7,
+   "episode": 12,
+   "writers": [ "Lucas", "Filoni" ]
+ },
+ {
+   "showId": 7,
+   "title": "Chernobyl",
+   "season": 1,
+   "episode": 5,
+   "writers": [ "Mazin" ]
+ },
+ {
+   "showId": 8,
+   "title": "Mr. Robot",
+   "season": 4,
+   "episode": 7,
+   "writers": [ "Esmail", "Pickering", "Gray" ]
+ },
+ {
+   "showId": 9,
+   "title": "Game of Thrones",
+   "season": 6,
+   "episode": 10,
+   "writers": [ "Martin" ]
+ },
+ {
+   "showId": 10,
+   "title": "Breaking Bad",
+   "season": 5,
+   "episode": 16,
+   "writers": [ "Gilligan" ]
+ }
+]
