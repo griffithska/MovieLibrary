@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections.Generic;
 using NLog.Web;
 using MovieLibrary.Repositories;
+using MovieLibrary.Models;
+using MovieLibrary.Files;
 
 namespace MovieLibrary
 {
