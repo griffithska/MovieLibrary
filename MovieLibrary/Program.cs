@@ -14,102 +14,119 @@ namespace MovieLibrary
         {
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
-            logger.Info("Program started");
+            string file;
+            string mediaChoice;
 
-            var file = Path.Combine(Environment.CurrentDirectory, "data", "movies") + ".json";
+            do
+            {
+                //movieManager.Movies = CsvFile.LoadFile(file);
 
-            var movieManager = new MovieManager();
-            
-            // make sure movie file exists
-            if (!File.Exists(file))
-            {
-                logger.Error("File does not exist: {File}", file);
-                Console.WriteLine("File does not exist: {File}", file);
-            }
-            else
-            {
-                string choice;
-                do
+                // display choices to user
+                Console.WriteLine("1) Display Movies");
+                Console.WriteLine("2) Display Shows");
+                Console.WriteLine("3) Display Videos");
+                Console.WriteLine("Press Enter to quit");
+                mediaChoice = Console.ReadLine();
+
+                logger.Info("User choice: {mediaChoice}", mediaChoice);
+
+                string type = mediaChoice == "1" ? "Movies" : mediaChoice == "2" ? "Shows" : mediaChoice == "3" ? "Videos" : "Unknown";
+                file = Path.Combine(Environment.CurrentDirectory, "data", type.ToLower()) + ".json";
+                logger.Info("Program started");
+
+                var movieManager = new MovieManager();
+
+                // make sure movie file exists
+                if (!File.Exists(file))
                 {
-                    IRepository repo = new JsonFile();
-                    movieManager.Movies = repo.LoadFile(file);
-
-                    // display choices to user
-                    Console.WriteLine("1) Add Movie");
-                    Console.WriteLine("2) Display All Movies");
-                    Console.WriteLine("Press Enter to quit");
-                    choice = Console.ReadLine();
-
-                    logger.Info("User choice: {Choice}", choice);
-
-                    if (choice == "1")
+                    logger.Error("File does not exist: {File}", file);
+                    Console.WriteLine("File does not exist: {File}", file);
+                }
+                else
+                {
+                    string choice;
+                    do
                     {
-                        Movie movie = new Movie();
-                        Console.WriteLine("Enter movie title: ");
-                        movie.Title = Console.ReadLine();
-                        if (movieManager.DuplicateTitle(movie.Title))
+                        IRepository repo = new JsonFile();
+                        movieManager.Movies = repo.LoadFile(file);
+
+                        // display choices to user
+                        Console.WriteLine("1) Add Movie");
+                        Console.WriteLine("2) Display All Movies");
+                        Console.WriteLine("Press Enter to quit");
+                        choice = Console.ReadLine();
+
+                        logger.Info("User choice: {Choice}", choice);
+
+                        if (choice == "1")
                         {
-                            Console.WriteLine("This movie already exists.");
-                        }
-                        else
-                        {
-                            // input genres
-                            string input;
-                            List<string> genreList = new List<string>();
-                            movie.MovieId = movieManager.NewMovieId();
-                            do
+                            Movie movie = new Movie();
+                            Console.WriteLine("Enter movie title: ");
+                            movie.Title = Console.ReadLine();
+                            if (movieManager.DuplicateTitle(movie.Title))
                             {
-                                // ask user to enter genre
-                                Console.WriteLine("Enter genre (or done to quit)");
-                                // input genre
-                                input = Console.ReadLine();
-                                // if user enters "done"
-                                // or does not enter a genre do not add it to list
-                                if (input != "done" && input.Length > 0)
+                                Console.WriteLine("This movie already exists.");
+                            }
+                            else
+                            {
+                                // input genres
+                                string input;
+                                List<string> genreList = new List<string>();
+                                movie.MovieId = movieManager.NewMovieId();
+                                do
                                 {
-                                    genreList.Add(input);
+                                    // ask user to enter genre
+                                    Console.WriteLine("Enter genre (or done to quit)");
+                                    // input genre
+                                    input = Console.ReadLine();
+                                    // if user enters "done"
+                                    // or does not enter a genre do not add it to list
+                                    if (input != "done" && input.Length > 0)
+                                    {
+                                        genreList.Add(input);
+                                    }
+                                } while (input != "done");
+                                // specify if no genres are entered
+                                if (genreList.Count == 0)
+                                {
+                                    genreList.Add("(no genres listed)");
                                 }
-                            } while (input != "done");
-                            // specify if no genres are entered
-                            if (genreList.Count == 0)
-                            {
-                                genreList.Add("(no genres listed)");
-                            }
-                            movie.Genres = genreList;
-                            // add movie
-                            //System.Console.WriteLine(movie.Display());
-                            try
-                            {
-                                movieManager.Movies.Add(movie);
-                                repo.AddRecord(movieManager.Movies, file);
-                                System.Console.WriteLine("Movie Added");
-                                System.Console.WriteLine(movie.Display());
-                            }
-                            catch (System.Exception)
-                            {
-                                System.Console.WriteLine("Adding movie failed.");
-                                logger.Error("Adding movie failed.", movie);
-                                throw;
-                            }
-                                
-                        }
-                    }
+                                movie.Genres = genreList;
+                                // add movie
+                                //System.Console.WriteLine(movie.Display());
+                                try
+                                {
+                                    movieManager.Movies.Add(movie);
+                                    repo.AddRecord(movieManager.Movies, file);
+                                    System.Console.WriteLine("Movie Added");
+                                    System.Console.WriteLine(movie.Display());
+                                }
+                                catch (System.Exception)
+                                {
+                                    System.Console.WriteLine("Adding movie failed.");
+                                    logger.Error("Adding movie failed.", movie);
+                                    throw;
+                                }
 
-                    else if (choice == "2")
-                    {
-                        //TableDisplay.PrintTable(movieManager.Movies);
-                        foreach(Movie m in movieManager.Movies)
+                            }
+                        }
+
+                        else if (choice == "2")
                         {
-                            Console.WriteLine(m.Display());
-                        }
+                            //TableDisplay.PrintTable(movieManager.Movies);
+                            foreach (Movie m in movieManager.Movies)
+                            {
+                                Console.WriteLine(m.Display());
+                            }
 
-                        Console.WriteLine("Press Enter to continue");
-                        Console.ReadLine();
-                    }
-                } while (choice == "1" || choice == "2");
-            }
+                            Console.WriteLine("Press Enter to continue");
+                            Console.ReadLine();
+                        }
+                    } while (choice == "1" || choice == "2");
+                }
+            } while (mediaChoice == "1" || mediaChoice == "2" || mediaChoice == "3");
 
             logger.Info("Program ended");
         }
-    }
+    }       
 }
