@@ -22,6 +22,7 @@ namespace MovieLibrary
                 //movieManager.Movies = CsvFile.LoadFile(file);
 
                 // display choices to user
+                Console.WriteLine("Choose desired media type.");
                 Console.WriteLine("1) Display Movies");
                 Console.WriteLine("2) Display Shows");
                 Console.WriteLine("3) Display Videos");
@@ -39,8 +40,8 @@ namespace MovieLibrary
                 // make sure movie file exists
                 if (!File.Exists(file))
                 {
-                    logger.Error("File does not exist: {File}", file);
-                    Console.WriteLine("File does not exist: {File}", file);
+                    logger.Error("File does not exist: {0}", file);
+                    Console.WriteLine("File does not exist: {0}", file);
                 }
                 else
                 {
@@ -51,8 +52,8 @@ namespace MovieLibrary
                         movieManager.Movies = repo.LoadFile(file);
 
                         // display choices to user
-                        Console.WriteLine("1) Add Movie");
-                        Console.WriteLine("2) Display All Movies");
+                        Console.WriteLine("1) Add {0}", type.Substring(0,type.Length-1));
+                        Console.WriteLine("2) Display All {0}", type);
                         Console.WriteLine("Press Enter to quit");
                         choice = Console.ReadLine();
 

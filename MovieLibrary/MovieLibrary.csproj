@@ -9,6 +9,8 @@
     <None Remove="data\movies-short.csv" />
     <None Remove="data\movies.csv" />
     <None Remove="data\movies.json" />
+    <None Remove="data\shows.json" />
+    <None Remove="data\videos.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +21,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="data\movies.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data\shows.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data\videos.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
