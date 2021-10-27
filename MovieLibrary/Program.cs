@@ -50,6 +50,7 @@ namespace MovieLibrary
                     string choice;
                     do
                     {
+                        //Ideally I want to move this into the MovieManager class and then also create shows and videos to handle their own
                         IRepository repo = new JsonFile();
                         movieManager.Movies = repo.LoadFile(file);
 

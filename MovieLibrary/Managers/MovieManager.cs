@@ -10,10 +10,12 @@ namespace MovieLibrary.Managers
     class MovieManager : IManager
     {
         private readonly Logger _logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+        //Don't get why this is forcing the "IManager." but using that full "IManager.Media" below makes it unhappy too
         List<IMedia> IManager.Media { get; set; }
 
         public void AddMedia()
         {
+            //Attempted to move this into here from program.cs to clean that up but getting lost
             Movie movie = new Movie();
             Console.WriteLine("Enter movie title: ");
             movie.Title = Console.ReadLine();
@@ -76,6 +78,7 @@ namespace MovieLibrary.Managers
             throw new NotImplementedException();
         }
 
+        //not sure if I still need to do this here and if I should be using IMedia or Movie and where to use each
         public void MediaManager()
         {
             IMedia Media = new List<Movie>();
