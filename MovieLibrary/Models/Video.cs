@@ -3,37 +3,26 @@ using CsvHelper.Configuration;
 
 namespace MovieLibrary.Models
 {
-    public class VideoRaw : Media
-    {
-        public string Format { get; set; }
-        public int Length { get; set; }
-        public string Regions { get; set; }
-
-        // public method
-        public override string Display()
-        {
-            return $"Id: {MediaId}  Title: {Title}  Format: {Format}  Length: {Length}  Regions: {Regions}";
-        }
-    }
-    public class Video : Media
+    public class Video : IMedia
     {
         // constructor
         public Video()
         {
             Regions = new List<int>();
         }
-
+        public uint MediaId { get; set; }
+        public string Title { get; set; }
         public string Format { get; set; }
         public int Length { get; set; }
         public List<int> Regions { get; set; }
 
         // public method
-        public override string Display()
+        public  string Display()
         {
             return $"Id: {MediaId}  Title: {Title}  Format: {Format}  Length: {Length}  Regions: {string.Join(", ", Regions)}";
         }
     }
-    public class VideoMap : ClassMap<VideoRaw>
+    public class VideoMap : ClassMap<Video>
     {
         public VideoMap()
         {

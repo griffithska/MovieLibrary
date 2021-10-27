@@ -3,19 +3,7 @@ using CsvHelper.Configuration;
 
 namespace MovieLibrary.Models
 {
-    public class ShowRaw : Media
-    {
-        public int Season { get; set; }
-        public int Episode { get; set; }
-        public string Writers { get; set; }
-
-        // public method
-        public override string Display()
-        {
-            return $"Id: {MediaId}  Title: {Title}  Season: {Season}  Episode: {Episode}  Writers: {Writers}";
-        }
-    }
-    public class Show : Media
+    public class Show : IMedia
     {
         // constructor
         public Show()
@@ -23,17 +11,19 @@ namespace MovieLibrary.Models
             Writers = new List<string>();
         }
 
+        public uint MediaId { get; set; }
+        public string Title { get; set; }
         public int Season { get; set; }
         public int Episode { get; set; }
         public List<string> Writers { get; set; }
 
         // public method
-        public override string Display()
+        public string Display()
         {
             return $"Id: {MediaId}  Title: {Title}  Season: {Season}  Episode: {Episode}  Writers: {string.Join(", ", Writers)}";
         }
     }
-    public class ShowMap : ClassMap<ShowRaw>
+    public class ShowMap : ClassMap<Show>
     {
         public ShowMap()
         {

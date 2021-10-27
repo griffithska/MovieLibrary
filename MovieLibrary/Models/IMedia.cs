@@ -2,14 +2,11 @@
 
 namespace MovieLibrary.Models
 {
-    public abstract class Media
+    interface IMedia
     {
         public uint MediaId { get; set; }
         public string Title { get; set; }
 
-        public virtual string Display()
-        {
-            return $"Id: {MediaId}\nTitle: {Title}\n";
-        }
+        public string Display();
     }
 }

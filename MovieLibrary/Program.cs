@@ -5,6 +5,7 @@ using NLog.Web;
 using MovieLibrary.Repositories;
 using MovieLibrary.Models;
 using MovieLibrary.Files;
+using MovieLibrary.Managers;
 
 namespace MovieLibrary
 {
@@ -26,6 +27,7 @@ namespace MovieLibrary
                 Console.WriteLine("1) Display Movies");
                 Console.WriteLine("2) Display Shows");
                 Console.WriteLine("3) Display Videos");
+                Console.WriteLine("4) Search All Media");
                 Console.WriteLine("Press Enter to quit");
                 mediaChoice = Console.ReadLine();
 
@@ -35,10 +37,10 @@ namespace MovieLibrary
                 file = Path.Combine(Environment.CurrentDirectory, "data", type.ToLower()) + ".json";
                 logger.Info("Program started");
 
-                var movieManager = new MovieManager();
+                IManager movieManager = new MovieManager();
 
                 // make sure movie file exists
-                if (!File.Exists(file))
+                if (!File.Exists(file) && mediaChoice != "4")
                 {
                     logger.Error("File does not exist: {0}", file);
                     Console.WriteLine("File does not exist: {0}", file);
