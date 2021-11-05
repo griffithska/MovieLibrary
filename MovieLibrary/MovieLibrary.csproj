@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\CsvFile.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="data\movies-short.csv" />
     <None Remove="data\movies.csv" />
     <None Remove="data\movies.json" />
@@ -29,6 +33,10 @@
     <EmbeddedResource Include="data\videos.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Repositories\CsvFile.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using ConsoleTables;
+using MovieLibrary.Models;
 
 namespace MovieLibrary
 {
     public class TableDisplay
     {
-        public static void PrintTable(List<Movie> movies)
+        public static void PrintTable(List<Media> movies)
         {
             ConsoleTable
                 .From(movies)
