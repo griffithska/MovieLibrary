@@ -10,28 +10,38 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.json" />
     <None Remove="data\movies-short.csv" />
     <None Remove="data\movies.csv" />
     <None Remove="data\movies.json" />
     <None Remove="data\shows.json" />
     <None Remove="data\videos.json" />
+    <None Remove="Files\SQL\1-InsertGenres.sql" />
+    <None Remove="Files\SQL\2-InsertMovies.sql" />
+    <None Remove="Files\SQL\3-InsertOccupations.sql" />
+    <None Remove="Files\SQL\4-InsertUsers.sql" />
+    <None Remove="Files\SQL\5-InsertGenresAndMovies.sql" />
+    <None Remove="Files\SQL\6-0-InsertRatings.sql" />
+    <None Remove="Files\SQL\6-1-InsertRatings.sql" />
+    <None Remove="Files\SQL\6-2-InsertRatings.sql" />
+    <None Remove="Files\SQL\6-3-InsertRatings.sql" />
+    <None Remove="Files\SQL\6-4-InsertRatings.sql" />
+    <None Remove="Files\SQL\6-5-InsertRatings.sql" />
+    <None Remove="Files\SQL\6-6-InsertRatings.sql" />
+    <None Remove="Files\SQL\6-7-InsertRatings.sql" />
+    <None Remove="Files\SQL\6-8-InsertRatings.sql" />
+    <None Remove="Files\SQL\6-9-InsertRatings.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="data\movies-short.csv">
+    <EmbeddedResource Include="Files\**\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="data\movies.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="data\movies.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="data\shows.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="data\videos.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -44,6 +54,15 @@
     <PackageReference Include="ConsoleTableExt" Version="3.1.9" />
     <PackageReference Include="ConsoleTables" Version="2.4.2" />
     <PackageReference Include="CsvHelper" Version="27.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog.Config" Version="4.7.11" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.4" />
