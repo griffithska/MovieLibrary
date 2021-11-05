@@ -3,7 +3,7 @@ using CsvHelper.Configuration;
 
 namespace MovieLibrary.Models
 {
-    public class Show : IMedia
+    public class Show : Media
     {
         // constructor
         public Show()
@@ -11,14 +11,12 @@ namespace MovieLibrary.Models
             Writers = new List<string>();
         }
 
-        public uint MediaId { get; set; }
-        public string Title { get; set; }
-        public int Season { get; set; }
-        public int Episode { get; set; }
-        public List<string> Writers { get; set; }
+        public override int Season { get; set; }
+        public override int Episode { get; set; }
+        public override List<string> Writers { get; set; }
 
         // public method
-        public string Display()
+        public override string Display()
         {
             return $"Id: {MediaId}  Title: {Title}  Season: {Season}  Episode: {Episode}  Writers: {string.Join(", ", Writers)}";
         }

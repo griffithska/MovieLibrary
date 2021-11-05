@@ -3,21 +3,20 @@ using CsvHelper.Configuration;
 
 namespace MovieLibrary.Models
 {
-    public class Video : IMedia
+    public class Video : Media
     {
         // constructor
         public Video()
         {
             Regions = new List<int>();
         }
-        public uint MediaId { get; set; }
-        public string Title { get; set; }
-        public string Format { get; set; }
-        public int Length { get; set; }
-        public List<int> Regions { get; set; }
+
+        public override string Format { get; set; }
+        public override int Length { get; set; }
+        public override List<int> Regions { get; set; }
 
         // public method
-        public  string Display()
+        public override string Display()
         {
             return $"Id: {MediaId}  Title: {Title}  Format: {Format}  Length: {Length}  Regions: {string.Join(", ", Regions)}";
         }

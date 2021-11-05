@@ -9,14 +9,14 @@ namespace MovieLibrary.Repositories
     {
         public string file { get; set; }
 
-        public List<IMedia> LoadFile(string file)
+        public List<Media> LoadFile(string file)
         {
             string json = File.ReadAllText(file);
-            var media = JsonConvert.DeserializeObject<List<IMedia>>(json);
+            var media = JsonConvert.DeserializeObject<List<Media>>(json);
             return media;
         }
 
-        public void AddRecord(List<IMedia> media, string file)
+        public void AddRecord(List<Media> media, string file)
         {
             File.WriteAllText(file, JsonConvert.SerializeObject(media));
         }

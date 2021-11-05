@@ -3,18 +3,17 @@ using CsvHelper.Configuration;
 
 namespace MovieLibrary.Models
 {
-    public class Movie : IMedia
+    public class Movie : Media
     {
         // constructor
         public Movie()
         {
             Genres = new List<string>();
         }
-        public uint MediaId { get; set; }
-        public string Title { get; set; }
-        public List<string> Genres { get; set; }
 
-        public string Display()
+        public override List<string> Genres { get; set; }
+
+        public override string Display()
         {
             return $"Id: {MediaId}  Title: {Title}  Genres: {string.Join(", ", Genres)}";
         }
