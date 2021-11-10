@@ -9,11 +9,9 @@ namespace MovieLibrary.Repositories
     {
         public string file { get; set; }
 
-        public List<Media> LoadFile(string file)
+        public List<Media> LoadFile(string fileText)
         {
-            string json = File.ReadAllText(file);
-            var media = JsonConvert.DeserializeObject<List<Media>>(json);
-            return media;
+            return JsonConvert.DeserializeObject<List<Media>>(fileText);
         }
 
         public void AddRecord(List<Media> media, string file)

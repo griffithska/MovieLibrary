@@ -11,17 +11,17 @@ namespace MovieLibrary
     {
         private readonly Logger _logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
-        public List<Media> Medias { get; set; }
+        public List<Media> MediaList { get; set; }
 
         public MediaManager()
         {
-            Medias = new List<Media>();
+            MediaList = new List<Media>();
         }
 
 
         public bool DuplicateTitle(string title)
         {
-            if (Medias.ConvertAll(m => m.Title.ToLower()).Contains(title.ToLower()))
+            if (MediaList.ConvertAll(m => m.Title.ToLower()).Contains(title.ToLower()))
             {
                 _logger.Info("Duplicate movie title {Title}", title);
                 return true;
@@ -38,7 +38,7 @@ namespace MovieLibrary
 
         public uint NewMovieId()
         {
-            uint NewId = Medias.Max(m => m.MediaId) + 1;
+            uint NewId = MediaList.Max(m => m.MediaId) + 1;
             return NewId;
         }
 

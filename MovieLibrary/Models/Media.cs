@@ -25,6 +25,5 @@ namespace MovieLibrary.Models
         public virtual int Length { get; set; }
         public virtual List<int> Regions { get; set; }
 
-
     }
 }

@@ -36,7 +36,7 @@ namespace MovieLibrary
                 file = Path.Combine(Environment.CurrentDirectory, "data", type.ToLower()) + ".json";
                 logger.Info("Program started");
 
-                MediaManager media = new MediaManager();
+                MediaManager manager = new MediaManager();
 
                 // make sure movie file exists
                 if (!File.Exists(file) && mediaChoice != "4")
@@ -50,8 +50,11 @@ namespace MovieLibrary
                     do
                     {
                         //Ideally I want to move this into the MovieManager class and then also create shows and videos to handle their own
-                        IRepository repo = new JsonFile();
-                        media.Medias = repo.LoadFile(file);
+                        FileManager fileManager = new FileManager();
+                        string fileText = fileManager.LoadFile(file);
+                        Movie MovieClass = new Movie();
+                        List<Media> movies = MovieClass.ParseText(fileText);
+                        manager.MediaList.AddRange(movies);
 
                         // display choices to user
                         Console.WriteLine("1) Add {0}", type.Substring(0,type.Length-1));
@@ -66,7 +69,7 @@ namespace MovieLibrary
                             Movie movie = new Movie();
                             Console.WriteLine("Enter movie title: ");
                             movie.Title = Console.ReadLine();
-                            if (media.DuplicateTitle(movie.Title))
+                            if (manager.DuplicateTitle(movie.Title))
                             {
                                 Console.WriteLine("This movie already exists.");
                             }
@@ -75,7 +78,7 @@ namespace MovieLibrary
                                 // input genres
                                 string input;
                                 List<string> genreList = new List<string>();
-                                movie.MediaId = media.NewMovieId();
+                                movie.MediaId = manager.NewMovieId();
                                 do
                                 {
                                     // ask user to enter genre
@@ -99,8 +102,8 @@ namespace MovieLibrary
                                 //System.Console.WriteLine(movie.Display());
                                 try
                                 {
-                                    media.Medias.Add(movie);
-                                    repo.AddRecord(media.Medias, file);
+                                    manager.MediaList.Add(movie);
+                                    repo.AddRecord(manager.MediaList, file);
                                     System.Console.WriteLine("Movie Added");
                                     System.Console.WriteLine(movie.Display());
                                 }
@@ -117,7 +120,7 @@ namespace MovieLibrary
                         else if (choice == "2")
                         {
                             //TableDisplay.PrintTable(movieManager.Movies);
-                            foreach (Movie m in media.Medias)
+                            foreach (Movie m in manager.MediaList)
                             {
                                 Console.WriteLine(m.Display());
                             }
