@@ -16,67 +16,53 @@ namespace MovieLibrary
 
             logger.Info("Program started");
 
-            string file;
-            string choice;
+            string movieFile;
+            string showFile;
+            string videoFile;
 
-            do
-            {
-                //movieManager.Movies = CsvFile.LoadFile(file);
+            Console.WriteLine("Please enter title to search:");
+            Console.WriteLine("Titles with multiple results: 'Toy Story (1995)' 'Breaking Bad'");
+            string input = Console.ReadLine();
 
-                // display choices to user
-                Console.WriteLine("1) Display Movies");
-                Console.WriteLine("2) Display Shows");
-                Console.WriteLine("3) Display Videos");
-                Console.WriteLine("Press Enter to quit");
-                choice = Console.ReadLine();
+            logger.Info("User input: {input}", input);
 
-                logger.Info("User choice: {Choice}", choice);
 
-                string type = choice == "1" ? "Movies" : choice == "2" ? "Shows" : choice == "3" ? "Videos" : "Unknown";
-                file = Path.Combine(Environment.CurrentDirectory, "data", type.ToLower()) + ".csv";
-                // make sure movie file exists
-                if (!File.Exists(file))
+            movieFile = Path.Combine(Environment.CurrentDirectory, "data", "movies.csv");
+            showFile = Path.Combine(Environment.CurrentDirectory, "data", "shows.csv");
+            videoFile = Path.Combine(Environment.CurrentDirectory, "data", "videos.csv");
+            // make sure movie file exists
+            if (!File.Exists(movieFile) || !File.Exists(showFile) || !File.Exists(videoFile))
                 {
                     Console.WriteLine("File does not exist");
-                    logger.Error("File does not exist: {File}", file);
+                    logger.Error("File does not exist: {File}", movieFile);
                 }
                 else
                 {
-                    Console.WriteLine(file);
-                    if (choice == "1")
-                    {
-                        //Tried making this work and it isn't
-                        //Maybe I'm overestimating what I can do with abstraction/polymorphism?
-                        //List<Media> movies = new List<MovieRaw>();
-                        List<MovieRaw> movies = new List<MovieRaw>();
-                        movies = MovieFile.LoadFile(file);
-                        foreach (var m in movies)
-                        {
-                            Console.WriteLine(m.Display()); 
-                        }
-                    }
-                    else if (choice == "2")
-                    {
-                        Console.WriteLine(file);
-                        List<ShowRaw> shows = new List<ShowRaw>();
-                        shows = ShowFile.LoadFile(file);
-                        foreach (var s in shows)
-                        {
-                            Console.WriteLine(s.Display());
-                        }
-                    }
-                    else if (choice == "3")
-                    {
-                        Console.WriteLine(file);
-                        List<VideoRaw> videos = new List<VideoRaw>();
-                        videos = VideoFile.LoadFile(file);
-                        foreach (var v in videos)
-                        {
-                            Console.WriteLine(v.Display());
-                        }
-                    }
+
+                List<MovieRaw> movies = new List<MovieRaw>();
+                movies = MovieFile.LoadFile(movieFile);
+
+                List<ShowRaw> shows = new List<ShowRaw>();
+                shows = ShowFile.LoadFile(showFile);
+
+                List<VideoRaw> videos = new List<VideoRaw>();
+                videos = VideoFile.LoadFile(videoFile);
+
+                List<MovieRaw> movieResult = movies.Where(x => x.Title == input).ToList();
+                List<ShowRaw> showResult = shows.Where(x => x.Title == input).ToList();
+                List<VideoRaw> videoResult = videos.Where(x => x.Title == input).ToList();
+
+                if (movieResult.Count() == 0 && showResult.Count() == 0 && videoResult.Count() == 0)
+                {
+                    Console.WriteLine("No results found for: {0}", input);
                 }
-            } while (choice == "1" || choice == "2" || choice == "3");
+                else
+                {
+                    movieResult.ForEach(x => Console.WriteLine("Movie: {0}", x.Display()));
+                    showResult.ForEach(x => Console.WriteLine("Show: {0}", x.Display()));
+                    videoResult.ForEach(x => Console.WriteLine("Video: {0}", x.Display()));
+                }
+            }
 
             logger.Info("Program ended");
         }
