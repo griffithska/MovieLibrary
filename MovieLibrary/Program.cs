@@ -48,9 +48,9 @@ namespace MovieLibrary
                 List<VideoRaw> videos = new List<VideoRaw>();
                 videos = VideoFile.LoadFile(videoFile);
 
-                List<MovieRaw> movieResult = movies.Where(x => x.Title == input).ToList();
-                List<ShowRaw> showResult = shows.Where(x => x.Title == input).ToList();
-                List<VideoRaw> videoResult = videos.Where(x => x.Title == input).ToList();
+                List<MovieRaw> movieResult = movies.Where(x => x.Title.ToLower().Contains(input.ToLower())).ToList();
+                List<ShowRaw> showResult = shows.Where(x => x.Title.ToLower().Contains(input.ToLower())).ToList();
+                List<VideoRaw> videoResult = videos.Where(x => x.Title.ToLower().Contains(input.ToLower())).ToList();
 
                 if (movieResult.Count() == 0 && showResult.Count() == 0 && videoResult.Count() == 0)
                 {
