@@ -6,7 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MediaManager.cs" />
+    <Compile Remove="Models\Media.cs" />
+    <Compile Remove="Models\Movie.cs" />
+    <Compile Remove="Models\Show.cs" />
+    <Compile Remove="Models\Video.cs" />
     <Compile Remove="Repositories\CsvFile.cs" />
+    <Compile Remove="Repositories\IRepository.cs" />
+    <Compile Remove="Repositories\JsonFile.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,7 +56,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="MediaManager.cs" />
+    <None Include="Models\Media.cs" />
+    <None Include="Models\Movie.cs" />
+    <None Include="Models\Show.cs" />
+    <None Include="Models\Video.cs" />
     <None Include="Repositories\CsvFile.cs" />
+    <None Include="Repositories\IRepository.cs" />
+    <None Include="Repositories\JsonFile.cs" />
   </ItemGroup>
 
   <ItemGroup>
