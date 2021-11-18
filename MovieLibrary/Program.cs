@@ -34,7 +34,7 @@ namespace MovieLibrary
 
                 if (choice == "1")
                 {
-                    Console.WriteLine("Enter movie title to search for:");
+                    Console.WriteLine("Enter movie title to search for (press enter to see all):");
                     string title = Console.ReadLine();
 
                     var movies = MovieManager.TitleSearch(title);
