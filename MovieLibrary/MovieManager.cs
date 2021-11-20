@@ -83,6 +83,7 @@ namespace MovieLibrary
         {
             if (movies.Count <= 10)
             {
+                Console.WriteLine("{0} movies matched", movies.Count);
                 movies.ForEach(x => Console.WriteLine(x.Display()));
             }
             else

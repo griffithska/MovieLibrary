@@ -12,5 +12,10 @@ namespace MovieLibrary.DataModels
 
         public virtual Occupation Occupation { get; set; }
         public virtual ICollection<UserMovie> UserMovies {get;set;}
+
+        public string Display()
+        {
+            return string.Format($"Id: {Id,-5}  Age: {Age,-5} Gender: {Gender,-5} ZipCode: {ZipCode,-8} Occupation: {Occupation.Name,-10} ");
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace MovieLibrary.DataModels
 
         public string Display()
         {
-            return $"Id: {Id}  Title: {Title}  Release Date: {ReleaseDate.ToShortDateString()}";
+            return string.Format($"Id: {Id,-5}  Title: {Title,-70}  Release Date: {ReleaseDate.ToShortDateString(),-8}");
         }
     }
 }

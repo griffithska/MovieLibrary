@@ -20,7 +20,9 @@ namespace MovieLibrary.Context
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json")
                 .Build();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("MovieContext"));
+            optionsBuilder
+                .UseLazyLoadingProxies()
+                .UseSqlServer(configuration.GetConnectionString("MovieContext"));
         }
     }
 }

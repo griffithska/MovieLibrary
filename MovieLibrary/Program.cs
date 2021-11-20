@@ -25,12 +25,14 @@ namespace MovieLibrary
                 Console.WriteLine("2) Add a movie");
                 Console.WriteLine("3) Update a movie");
                 Console.WriteLine("4) Delete a movie");
+                Console.WriteLine("5) Search for a user");
                 Console.WriteLine("Press Enter to quit");
                 choice = Console.ReadLine();
 
                 logger.Info("User choice: {Choice}", choice);
 
                 MovieManager manager = new();
+                UserManager uManager = new();
 
                 if (choice == "1")
                 {
@@ -171,7 +173,25 @@ namespace MovieLibrary
                         Console.WriteLine("No matches found.");
                     }
                 }
-            } while (choice == "1" || choice == "2" || choice == "3" || choice == "4");
+
+                else if (choice == "5")
+                {
+                    Console.WriteLine("Please enter user's age (Press Enter to skip):");
+                    int? age;
+                    string ageString = Console.ReadLine();
+                    age = int.TryParse(ageString, out int age2) ? (int?)age2 : null;
+                    Console.WriteLine("Please enter user's gender (M/F): (Press Enter to skip)");
+                    string gender = Console.ReadLine();
+                    Console.WriteLine("Please enter user's Zip Code: (Press Enter to skip)");
+                    string zipCode = Console.ReadLine();
+                    Console.WriteLine("Please enter user's occupation: (Press Enter to skip)");
+                    string occupation = Console.ReadLine();
+
+                    var users = UserManager.UserSearch(age, gender, zipCode, occupation);
+                    UserManager.ListUsers(users);
+
+                }
+                } while (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5");
 
 
         logger.Info("Program ended");
