@@ -26,6 +26,7 @@ namespace MovieLibrary
                 Console.WriteLine("3) Update a movie");
                 Console.WriteLine("4) Delete a movie");
                 Console.WriteLine("5) Search for a user");
+                Console.WriteLine("6) Add new user");
                 Console.WriteLine("Press Enter to quit");
                 choice = Console.ReadLine();
 
@@ -33,6 +34,7 @@ namespace MovieLibrary
 
                 MovieManager manager = new();
                 UserManager uManager = new();
+                OccupationManager oManager = new();
 
                 if (choice == "1")
                 {
@@ -43,10 +45,12 @@ namespace MovieLibrary
                     if (movies.Count() > 0)
                     {
                         MovieManager.ListMovies(movies);
+                        Console.ReadLine();
                     }
                     else
                     {
                         Console.WriteLine("No matches found.");
+                        Console.ReadLine();
                     }
                 }
 
@@ -58,6 +62,7 @@ namespace MovieLibrary
                     if (manager.DuplicateTitle(movie.Title))
                     {
                         Console.WriteLine("This movie already exists.");
+                        Console.ReadLine();
                     }
                     else
                     {
@@ -79,6 +84,7 @@ namespace MovieLibrary
                             manager.MovieList.ForEach(x => MovieManager.AddMovie(x));
                             System.Console.WriteLine("Movie Added");
                             System.Console.WriteLine(movie.Display());
+                            Console.ReadLine();
                         }
                         catch (System.Exception)
                         {
@@ -104,15 +110,18 @@ namespace MovieLibrary
                         long Id = UInt32.Parse(Console.ReadLine());
                         movie = movies.Where(x => x.Id == Id).FirstOrDefault();
                         Console.WriteLine(movie.Display());
+                        Console.ReadLine();
                     }
                     else if (movies.Count == 1)
                     {
                         movie = movies.FirstOrDefault();
                         Console.WriteLine(movies.First().Display());
+                        Console.ReadLine();
                     }
                     else if (movies.Count == 0)
                     {
                         Console.WriteLine("No matches found.");
+                        Console.ReadLine();
                     }
 
                     if (movie is not null)
@@ -145,6 +154,7 @@ namespace MovieLibrary
                         }
                         MovieManager.UpdateMovie(movie);
                         Console.WriteLine(movie.Display());
+                        Console.ReadLine();
                     }
                 }
 
@@ -167,10 +177,12 @@ namespace MovieLibrary
                         Console.WriteLine(movies.First().Display());
                         MovieManager.DeleteMovie(movies.First());
                         Console.WriteLine("{0} Deleted", movies.First().Title);
+                        Console.ReadLine();
                     }
                     else if (movies.Count == 0)
                     {
                         Console.WriteLine("No matches found.");
+                        Console.ReadLine();
                     }
                 }
 
@@ -189,12 +201,45 @@ namespace MovieLibrary
 
                     var users = UserManager.UserSearch(age, gender, zipCode, occupation);
                     UserManager.ListUsers(users);
-
+                    Console.ReadLine();
                 }
-                } while (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5");
+                else if (choice == "6")
+                {
+                    User user = new();
+                    //Occupation occ = new();
+                    string occ;
 
+                    Console.WriteLine("Please enter user's age:");
+                    string ageString = Console.ReadLine();
+                    user.Age = (long)(long.TryParse(ageString, out long age2) ? (long?)age2 : null);
+                    Console.WriteLine("Please enter user's gender (M/F):");
+                    user.Gender = Console.ReadLine();
+                    Console.WriteLine("Please enter user's Zip Code:");
+                    user.ZipCode = Console.ReadLine();
+                    Console.WriteLine("Please enter user's occupation:");
+                    occ = Console.ReadLine();
 
-        logger.Info("Program ended");
+                    var occExists = OccupationManager.OccupationSearch(occ);
+                    if (occExists.Count >= 1)
+                    {
+                        Console.WriteLine(occExists.First().Display());
+                        user.Occupation.Name = occ;
+                        //user.Occupation.Id = occExists.First().Id;
+                    }
+                    else
+                    {
+                        OccupationManager.AddOccupation(occ);
+                        occExists = OccupationManager.OccupationSearch(occ);
+                        user.Occupation = occExists.First();
+                    }
+                    Console.WriteLine(user.Display());
+                    Console.WriteLine(occExists.First().Display());
+                    UserManager.AddUser(user);
+                    Console.ReadLine();
+                }
+            } while (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5" || choice == "6" || choice == "7" || choice == "8");
+
+logger.Info("Program ended");
         }
     }       
 }

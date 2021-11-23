@@ -10,28 +10,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MovieLibrary
 {
-    public class UserManager
+    public class OccupationManager
     {
         private readonly Logger _logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
-        public List<User> UserList { get; set; }
+        public List<Occupation> MovieList { get; set; }
 
-        public UserManager()
+        public OccupationManager()
         {
-            UserList = new List<User>();
+            MovieList = new List<Occupation>();
         }
 
-        public static List<User> UserSearch(int? age, string gender, string zipCode, string occupation)
+        public static List<Occupation> OccupationSearch(string name)
         {
             using (var db = new MovieContext())
             {
-                return db.Users
-                    .Include(o => o.Occupation)
-                    .Where(u => u.Age == age || age == null)
-                    .Where(u => u.Gender.ToLower() == gender.ToLower() || gender == "")
-                    .Where(u => u.ZipCode.ToLower() == zipCode.ToLower() || zipCode == "")
-                    .Where(u => u.Occupation.Name.ToLower() == occupation.ToLower() || occupation == "")
-                    .OrderBy(u => u.Id)
+                return db.Occupations
+                    .Where(o => o.Name == name)
+                    .OrderBy(o => o.Name)
                     .ToList();
             }
         }
@@ -44,11 +40,15 @@ namespace MovieLibrary
         //    }
         //}
 
-        public static void AddUser(User user)
+        public static void AddOccupation(string occ)
         {
             using (var db = new MovieContext())
             {
-                db.Users.Add(user);
+                Occupation occupation = new()
+                {
+                    Name = occ
+                };
+                db.Occupations.Add(occupation);
                 db.SaveChanges();
             }
         }
@@ -71,20 +71,20 @@ namespace MovieLibrary
         //    }
         //}
 
-        public static void ListUsers(List<User> users)
+        public static void ListOccupations(List<Occupation> occ)
         {
-            if (users.Count <= 10)
+            if (occ.Count <= 10)
             {
-                Console.WriteLine("{0} users matched", users.Count);
-                users.ForEach(x => Console.WriteLine(x.Display()));
+                Console.WriteLine("{0} users matched", occ.Count);
+                occ.ForEach(x => Console.WriteLine(x.Display()));
             }
             else
             {
-                Console.WriteLine("{0} users matched", users.Count);
-                for (var i = 0; i < users.Count; i += 10)
+                Console.WriteLine("{0} occupations matched", occ.Count);
+                for (var i = 0; i < occ.Count; i += 10)
                 {
-                    users.Skip(i).Take(10).ToList().ForEach(x => Console.WriteLine(x.Display()));
-                    Console.WriteLine("Press any key to display next 10 users");
+                    occ.Skip(i).Take(10).ToList().ForEach(x => Console.WriteLine(x.Display()));
+                    Console.WriteLine("Press any key to display next 10 occupations");
                     Console.ReadLine();
                 }
             }
