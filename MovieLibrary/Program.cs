@@ -27,6 +27,8 @@ namespace MovieLibrary
                 Console.WriteLine("4) Delete a movie");
                 Console.WriteLine("5) Search for a user");
                 Console.WriteLine("6) Add new user");
+                Console.WriteLine("7) Rate a movie");
+                Console.WriteLine("8) Top Rated Movies!");
                 Console.WriteLine("Press Enter to quit");
                 choice = Console.ReadLine();
 
@@ -223,8 +225,7 @@ namespace MovieLibrary
                     if (occExists.Count >= 1)
                     {
                         Console.WriteLine(occExists.First().Display());
-                        user.Occupation.Name = occ;
-                        //user.Occupation.Id = occExists.First().Id;
+                        user.Occupation = occExists.First();
                     }
                     else
                     {
@@ -237,7 +238,136 @@ namespace MovieLibrary
                     UserManager.AddUser(user);
                     Console.ReadLine();
                 }
-            } while (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5" || choice == "6" || choice == "7" || choice == "8");
+                else if (choice == "7")
+                {
+                    Console.WriteLine("Search for user");
+                    Console.WriteLine("Please enter user's age (Press Enter to skip):");
+                    int? age;
+                    string ageString = Console.ReadLine();
+                    age = int.TryParse(ageString, out int age2) ? (int?)age2 : null;
+                    Console.WriteLine("Please enter user's gender (M/F): (Press Enter to skip)");
+                    string gender = Console.ReadLine();
+                    Console.WriteLine("Please enter user's Zip Code: (Press Enter to skip)");
+                    string zipCode = Console.ReadLine();
+                    Console.WriteLine("Please enter user's occupation: (Press Enter to skip)");
+                    string occupation = Console.ReadLine();
+
+                    var users = UserManager.UserSearch(age, gender, zipCode, occupation);
+                    UserManager.ListUsers(users);
+                    Console.WriteLine("Enter User ID to use for rating:");
+                    string userId = Console.ReadLine();
+
+                    Console.WriteLine("Search for move to rate");
+                    Console.WriteLine("Enter title");
+                    string title = Console.ReadLine();
+                    var movies = MovieManager.TitleSearch(title);
+                    Movie movie = new Movie();
+                    if (movies.Count() > 1)
+                    {
+                        Console.WriteLine("Multiple movies matched");
+                        MovieManager.ListMovies(movies);
+                        Console.WriteLine("Enter ID of the movie to update:");
+                        long Id = UInt32.Parse(Console.ReadLine());
+                        movie = movies.Where(x => x.Id == Id).FirstOrDefault();
+                        Console.WriteLine(movie.Display());
+                        Console.ReadLine();
+                    }
+                    else if (movies.Count == 1)
+                    {
+                        movie = movies.FirstOrDefault();
+                        Console.WriteLine(movies.First().Display());
+                        Console.ReadLine();
+                    }
+                    else if (movies.Count == 0)
+                    {
+                        Console.WriteLine("No matches found.");
+                        Console.ReadLine();
+                    }
+
+                    if (movie is not null)
+                    {
+                        Console.WriteLine("Enter rating (1-5):");
+                        string ratingString = Console.ReadLine();
+                        long rating = (long)(long.TryParse(ratingString, out long rating2) ? (long?)rating2 : null);
+                        //Add some more here to add the rating
+                    }
+                }
+                else if (choice == "8")
+                {
+                    Console.WriteLine("How would you like ratings displayed?");
+                    Console.WriteLine("1) Top Rated by Age Bracket");
+                    Console.WriteLine("2) Top Rated by Occupation");
+                    Console.WriteLine("3) Top Rated by Decade");
+                    Console.WriteLine("4) Most Rated Movies");
+                    string rChoice = Console.ReadLine();
+
+                    if (rChoice == "1")
+                    {
+                        Console.WriteLine("Top Rated Movies by Age Bracket:");
+                    }
+
+                    else if (rChoice == "2")
+                    {
+                        List<long> occ = OccupationManager.OccupationIdDump();
+                        Console.WriteLine("Top Rated Movie by Occupation (movies with at least 5 ratings)");
+                        foreach(long occId in occ)
+                        {
+                            using (var db = new MovieContext())
+                            {
+                                var results = db.UserMovies
+                                   .Where(um => (um.User.Occupation.Id == occId))
+                                   .GroupBy(
+                                      um =>
+                                         new
+                                         {
+                                             um.User.Occupation.Name,
+                                             um.Movie.Title
+                                         }
+                                   )
+                                   .Select(
+                                      occGroup =>
+                                         new
+                                         {
+                                             Occupation = occGroup.Key.Name,
+                                             Title = occGroup.Key.Title,
+                                             AverageRating = occGroup.Average(x => x.Rating),
+                                             RatingCount = occGroup.Count()
+                                         }
+                                   )
+                                   .Where(x => (x.RatingCount >= 5))
+                                   .OrderByDescending(x => x.AverageRating)
+                                   .ThenBy(x => x.Title)
+                                   .Take(1);
+                                var mov = results.FirstOrDefault();
+                                if (mov is null)
+                                {
+                                    using (var dbo = new MovieContext())
+                                    {
+                                        var ocu = dbo.Occupations
+                                            .Where(o => o.Id == occId)
+                                            .FirstOrDefault();
+                                        Console.WriteLine($"Occupation: {ocu.Name, -15} Not Enough Ratings");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Occupation: {mov.Occupation,-15} Average Rating: {mov.AverageRating,-5:0.00} Title: {mov.Title,-50}");
+                                }
+                            }
+                        }
+                    }
+
+                    else if (rChoice == "3")
+                    {
+
+                    }
+
+                    else if (rChoice == "4")
+                    {
+
+                    }
+                }
+             } while (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5" || choice == "6" || choice == "7" || choice == "8");
 
 logger.Info("Program ended");
         }

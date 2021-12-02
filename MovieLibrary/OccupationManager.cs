@@ -32,6 +32,17 @@ namespace MovieLibrary
             }
         }
 
+        public static List<long> OccupationIdDump()
+        {
+            using (var db = new MovieContext())
+            {
+                return db.Occupations
+                    .OrderBy(o => o.Name)
+                    .Select(o => o.Id)
+                    .ToList();
+            }
+        }
+
         //public static List<Movie> IdSearch(long Id)
         //{
         //    using (var db = new MovieContext())
