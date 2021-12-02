@@ -36,6 +36,14 @@ namespace MovieLibrary
             }
         }
 
+        public static User UserById(long userId)
+        {
+            using (var db = new MovieContext())
+            {
+                return db.Users.Where(u => u.Id == userId).FirstOrDefault();
+            }
+        }
+
         //public static List<Movie> IdSearch(long Id)
         //{
         //    using (var db = new MovieContext())

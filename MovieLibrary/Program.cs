@@ -118,7 +118,6 @@ namespace MovieLibrary
                     {
                         movie = movies.FirstOrDefault();
                         Console.WriteLine(movies.First().Display());
-                        Console.ReadLine();
                     }
                     else if (movies.Count == 0)
                     {
@@ -133,6 +132,7 @@ namespace MovieLibrary
                         Console.WriteLine("2) Release Date");
                         Console.WriteLine("3) Both");
                         string updChoice = Console.ReadLine();
+                        logger.Info("User choice: {Choice}", updChoice);
 
                         if (updChoice == "1" || updChoice == "3")
                         {
@@ -255,7 +255,8 @@ namespace MovieLibrary
                     var users = UserManager.UserSearch(age, gender, zipCode, occupation);
                     UserManager.ListUsers(users);
                     Console.WriteLine("Enter User ID to use for rating:");
-                    string userId = Console.ReadLine();
+                    long userId = UInt32.Parse(Console.ReadLine());
+                    var user = UserManager.UserById(userId);
 
                     Console.WriteLine("Search for move to rate");
                     Console.WriteLine("Enter title");
@@ -289,17 +290,33 @@ namespace MovieLibrary
                         Console.WriteLine("Enter rating (1-5):");
                         string ratingString = Console.ReadLine();
                         long rating = (long)(long.TryParse(ratingString, out long rating2) ? (long?)rating2 : null);
-                        //Add some more here to add the rating
+                        var userMovie = new UserMovie()
+                        {
+                            Rating = rating,
+                            RatedAt = DateTime.Now
+                        };
+                        var userMovies = new List<UserMovie>();
+                        userMovies.Add(userMovie);
+
+                        userMovie.User = user;
+                        userMovie.Movie = movie;
+
+                        using (var db = new MovieContext())
+                        {
+                            db.UserMovies.Add(userMovie);
+                            db.SaveChanges();
+                        }
                     }
                 }
                 else if (choice == "8")
                 {
                     Console.WriteLine("How would you like ratings displayed?");
                     Console.WriteLine("1) Top Rated by Age Bracket");
-                    Console.WriteLine("2) Top Rated by Occupation");
+                    Console.WriteLine("2) Top Rated by Occupation (at least 5 ratings)");
                     Console.WriteLine("3) Top Rated by Decade");
                     Console.WriteLine("4) Most Rated Movies");
                     string rChoice = Console.ReadLine();
+                    logger.Info("User choice: {Choice}", rChoice);
 
                     if (rChoice == "1")
                     {
@@ -355,6 +372,7 @@ namespace MovieLibrary
                                 }
                             }
                         }
+                        Console.ReadLine();
                     }
 
                     else if (rChoice == "3")
@@ -364,7 +382,36 @@ namespace MovieLibrary
 
                     else if (rChoice == "4")
                     {
-
+                        Console.WriteLine("Movies with the Most Ratings");
+                        Console.WriteLine("{0,-50} {1,-10:0} {2,-10:0.00}", "Title", "Ratings", "Avg Rating");
+                        using (var db = new MovieContext())
+                        {
+                            var results = db.UserMovies
+                               .GroupBy(
+                                  um =>
+                                     new
+                                     {
+                                         um.Movie.Title
+                                     }
+                               )
+                               .Select(
+                                  occGroup =>
+                                     new
+                                     {
+                                         Title = occGroup.Key.Title,
+                                         AverageRating = occGroup.Average(x => x.Rating),
+                                         RatingCount = occGroup.Count()
+                                     }
+                               )
+                               .Where(x => (x.RatingCount >= 5))
+                               .OrderByDescending(x => x.RatingCount)
+                               .ThenBy(x => x.AverageRating)
+                               .ThenBy(x => x.Title)
+                               .Take(10)
+                               .ToList();
+                             results.ForEach(x => Console.WriteLine($"{x.Title,-50} {x.RatingCount,-10:0} {x.AverageRating,-10:0.00}"));
+                        }
+                        Console.ReadLine();
                     }
                 }
              } while (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5" || choice == "6" || choice == "7" || choice == "8");
