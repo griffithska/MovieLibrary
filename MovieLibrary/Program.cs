@@ -312,13 +312,11 @@ namespace MovieLibrary
                             logger.Info($"Title Entered: {title}");
                             movie = movies.Where(x => x.Id == Id).FirstOrDefault();
                             Console.WriteLine(movie.Display());
-                            Console.ReadLine();
                         }
                         else if (movies.Count == 1)
                         {
                             movie = movies.FirstOrDefault();
                             Console.WriteLine(movies.First().Display());
-                            Console.ReadLine();
                         }
                         else if (movies.Count == 0)
                         {
@@ -345,7 +343,15 @@ namespace MovieLibrary
                             
                             db.UserMovies.Add(userMovie);
                             db.SaveChanges();
-                        }
+
+                            Console.WriteLine("Rating Added");
+                            Console.Write("User: ");
+                            Console.WriteLine(user.Display());
+                            Console.Write("Movie: ");
+                            Console.WriteLine(movie.Display());
+                            Console.WriteLine($"Rating: {userMovie.Rating}");
+                            Console.ReadLine();
+                        }   
                     }
                 }
                 else if (choice == "8")
