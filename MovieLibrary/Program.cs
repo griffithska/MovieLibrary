@@ -33,7 +33,7 @@ namespace MovieLibrary
                 Console.WriteLine("Press Enter to quit");
                 choice = Console.ReadLine();
 
-                logger.Info("User choice: {Choice}", choice);
+                logger.Info("Main Menu user choice: {Choice}", choice);
 
                 MovieManager manager = new();
                 UserManager uManager = new();
@@ -43,6 +43,7 @@ namespace MovieLibrary
                 {
                     Console.WriteLine("Enter movie title to search for (press enter to see all):");
                     string title = Console.ReadLine();
+                    logger.Info($"Title Entered: {title}");
                     using (var db = new MovieContext())
                     {
                         var movies = MovieManager.TitleSearch(title, db);
@@ -64,6 +65,7 @@ namespace MovieLibrary
                     Movie movie = new Movie();
                     Console.WriteLine("Enter title of movie to add: ");
                     movie.Title = Console.ReadLine();
+                    logger.Info($"Title Entered: {movie.Title}");
                     using (var db = new MovieContext())
                     {
                         if (manager.DuplicateTitle(movie.Title, db))
@@ -84,6 +86,7 @@ namespace MovieLibrary
                             {
                                 throw new ArgumentException("Not a valid date");
                             }
+                            logger.Info($"Release Date Entered: {movie.ReleaseDate}");
                             try
                             {
                                 manager.MovieList.Add(movie);
@@ -106,6 +109,7 @@ namespace MovieLibrary
                 {
                     Console.WriteLine("Enter movie title to update:");
                     string title = Console.ReadLine();
+                    logger.Info($"Title Entered: {title}");
                     using (var db = new MovieContext())
                     {
                         var movies = MovieManager.TitleSearch(title, db);
@@ -116,6 +120,7 @@ namespace MovieLibrary
                             MovieManager.ListMovies(movies);
                             Console.WriteLine("Enter ID of the movie to update:");
                             long Id = UInt32.Parse(Console.ReadLine());
+                            logger.Info($"MovieId Entered: {Id}");
                             movie = movies.Where(x => x.Id == Id).FirstOrDefault();
                             Console.WriteLine(movie.Display());
                             Console.ReadLine();
@@ -144,6 +149,7 @@ namespace MovieLibrary
                             {
                                 Console.WriteLine("Please enter new title:");
                                 movie.Title = Console.ReadLine();
+                                logger.Info($"Title Entered: {movie.Title}");
                             }
                             if (updChoice == "2" || updChoice == "3")
                             {
@@ -158,6 +164,7 @@ namespace MovieLibrary
                                 {
                                     throw new ArgumentException("Not a valid date");
                                 }
+                                logger.Info($"Release Date Entered: {movie.ReleaseDate}");
                             }
                             MovieManager.UpdateMovie(movie, db);
                             Console.WriteLine(movie.Display());
@@ -170,6 +177,7 @@ namespace MovieLibrary
                 {
                     Console.WriteLine("Enter movie title to delete:");
                     string title = Console.ReadLine();
+                    logger.Info($"Title Entered: {title}");
                     using (var db = new MovieContext())
                     {
                         var movies = MovieManager.TitleSearch(title, db);
@@ -179,6 +187,7 @@ namespace MovieLibrary
                             MovieManager.ListMovies(movies);
                             Console.WriteLine("Enter ID of the movie to delete:");
                             long Id = Int64.Parse(Console.ReadLine());
+                            logger.Info($"MovieId Entered: {Id}");
                             MovieManager.DeleteMovie(movies.Where(x => x.Id == Id).FirstOrDefault(), db);
 
                         }
@@ -202,13 +211,17 @@ namespace MovieLibrary
                     Console.WriteLine("Please enter user's age (Press Enter to skip):");
                     int? age;
                     string ageString = Console.ReadLine();
+                    logger.Info($"Age String Entered: {ageString}");
                     age = int.TryParse(ageString, out int age2) ? (int?)age2 : null;
                     Console.WriteLine("Please enter user's gender (M/F): (Press Enter to skip)");
                     string gender = Console.ReadLine();
+                    logger.Info($"Gender Entered: {gender}");
                     Console.WriteLine("Please enter user's Zip Code: (Press Enter to skip)");
                     string zipCode = Console.ReadLine();
+                    logger.Info($"Zip Code Entered: {zipCode}");
                     Console.WriteLine("Please enter user's occupation: (Press Enter to skip)");
                     string occupation = Console.ReadLine();
+                    logger.Info($"Occupation Name Entered: {occupation}");
 
                     using (var db = new MovieContext())
                     {
@@ -227,13 +240,17 @@ namespace MovieLibrary
 
                         Console.WriteLine("Please enter user's age:");
                         string ageString = Console.ReadLine();
+                        logger.Info($"Age String Entered: {ageString}");
                         user.Age = (long)(long.TryParse(ageString, out long age2) ? (long?)age2 : null);
                         Console.WriteLine("Please enter user's gender (M/F):");
                         user.Gender = Console.ReadLine();
+                        logger.Info($"Gender Entered: {user.Gender}");
                         Console.WriteLine("Please enter user's Zip Code:");
                         user.ZipCode = Console.ReadLine();
+                        logger.Info($"Zip Code Entered: {user.ZipCode}");
                         Console.WriteLine("Please enter user's occupation:");
                         occ = Console.ReadLine();
+                        logger.Info($"Occupation Name Entered: {occ}");
 
                         var occExists = OccupationManager.OccupationSearch(occ, db);
                         if (occExists.Count >= 1)
@@ -259,13 +276,17 @@ namespace MovieLibrary
                     Console.WriteLine("Please enter user's age (Press Enter to skip):");
                     int? age;
                     string ageString = Console.ReadLine();
+                    logger.Info($"Age String Entered: {ageString}");
                     age = int.TryParse(ageString, out int age2) ? (int?)age2 : null;
                     Console.WriteLine("Please enter user's gender (M/F): (Press Enter to skip)");
                     string gender = Console.ReadLine();
+                    logger.Info($"Gender Entered: {gender}");
                     Console.WriteLine("Please enter user's Zip Code: (Press Enter to skip)");
                     string zipCode = Console.ReadLine();
+                    logger.Info($"Zip Code Entered: {zipCode}");
                     Console.WriteLine("Please enter user's occupation: (Press Enter to skip)");
                     string occupation = Console.ReadLine();
+                    logger.Info($"Occupation Name Entered: {occupation}");
 
                     using (var db = new MovieContext())
                     {
@@ -273,11 +294,13 @@ namespace MovieLibrary
                         UserManager.ListUsers(users);
                         Console.WriteLine("Enter User ID to use for rating:");
                         long userId = UInt32.Parse(Console.ReadLine());
+                        logger.Info($"UserId Entered: {userId}");
                         var user = UserManager.UserById(userId, db);
 
-                        Console.WriteLine("Search for move to rate");
+                        Console.WriteLine("Search for movie to rate");
                         Console.WriteLine("Enter title");
                         string title = Console.ReadLine();
+                        logger.Info($"Title Entered: {title}");
                         var movies = MovieManager.TitleSearch(title, db);
                         Movie movie = new Movie();
                         if (movies.Count() > 1)
@@ -286,6 +309,7 @@ namespace MovieLibrary
                             MovieManager.ListMovies(movies);
                             Console.WriteLine("Enter ID of the movie to update:");
                             long Id = UInt32.Parse(Console.ReadLine());
+                            logger.Info($"Title Entered: {title}");
                             movie = movies.Where(x => x.Id == Id).FirstOrDefault();
                             Console.WriteLine(movie.Display());
                             Console.ReadLine();
@@ -306,6 +330,7 @@ namespace MovieLibrary
                         {
                             Console.WriteLine("Enter rating (1-5):");
                             string ratingString = Console.ReadLine();
+                            logger.Info($"Rating string Entered: {ratingString}");
                             long rating = (long)(long.TryParse(ratingString, out long rating2) ? (long?)rating2 : null);
                             var userMovie = new UserMovie()
                             {
@@ -317,8 +342,9 @@ namespace MovieLibrary
 
                             userMovie.User = user;
                             userMovie.Movie = movie;
-                                db.UserMovies.Add(userMovie);
-                                db.SaveChanges();
+                            
+                            db.UserMovies.Add(userMovie);
+                            db.SaveChanges();
                         }
                     }
                 }
@@ -330,7 +356,7 @@ namespace MovieLibrary
                     Console.WriteLine("3) Top Rated Movies");
                     Console.WriteLine("4) Most Rated Movies");
                     string rChoice = Console.ReadLine();
-                    logger.Info("User choice: {Choice}", rChoice);
+                    logger.Info($"Ratings Menu User Choice: {rChoice}");
 
                     if (rChoice == "1")
                     {
@@ -402,7 +428,9 @@ namespace MovieLibrary
                         Console.WriteLine("Enter minimun number of ratings to consider:");
                         long rat;
                         string ratString = Console.ReadLine();
+                        logger.Info($"Minumum Ratings String Entered: {ratString}");
                         rat = (long)(long.TryParse(ratString, out long rat2) ? (long?)rat2 : null);
+                        Console.WriteLine("{0,-50} {1,-10:0} {2,-10:0.00}", "Title", "Ratings", "Avg Rating");
                         using (var db = new MovieContext())
                         {
                             var results = db.UserMovies
