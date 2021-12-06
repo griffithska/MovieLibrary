@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="MediaManager.cs" />
+    <Compile Remove="Models\AgeBracketResults.cs" />
     <Compile Remove="Models\Media.cs" />
     <Compile Remove="Models\Movie.cs" />
     <Compile Remove="Models\Show.cs" />
@@ -56,7 +56,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="MediaManager.cs" />
     <None Include="Models\Media.cs" />
     <None Include="Models\Movie.cs" />
     <None Include="Models\Show.cs" />
@@ -71,6 +70,7 @@
     <PackageReference Include="ConsoleTableExt" Version="3.1.9" />
     <PackageReference Include="ConsoleTables" Version="2.4.2" />
     <PackageReference Include="CsvHelper" Version="27.1.1" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.11">
       <PrivateAssets>all</PrivateAssets>

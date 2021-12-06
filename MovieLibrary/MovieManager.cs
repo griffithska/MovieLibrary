@@ -1,5 +1,4 @@
-﻿//using MovieLibrary.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NLog;
 using NLog.Web;
@@ -21,62 +20,43 @@ namespace MovieLibrary
         }
 
 
-        public bool DuplicateTitle(string title)
+        public bool DuplicateTitle(string title, MovieContext db)
         {
-            using (var db = new MovieContext())
-            {
                 var movies = db.Movies.Where(x => x.Title.ToLower().Contains(title.ToLower())).ToList();
                 if (movies.Count() > 0)
                 {
                     _logger.Info("Duplicate movie title {Title}", title);
                     return true;
                 }
-            }
-
             return false;
         }
 
-        public static List<Movie> TitleSearch(string title)
+        public static List<Movie> TitleSearch(string title, MovieContext db)
         {
-            using (var db = new MovieContext())
-            {
                 return db.Movies.Where(x => x.Title.ToLower().Contains(title.ToLower())).ToList();
-            }
         }
 
-        public static List<Movie> IdSearch(long Id)
+        public static List<Movie> IdSearch(long Id, MovieContext db)
         {
-            using (var db = new MovieContext())
-            {
                 return db.Movies.Where(x => x.Id == Id).ToList();
-            }
         }
 
-        public static void AddMovie(Movie movie)
+        public static void AddMovie(Movie movie, MovieContext db)
         {
-            using (var db = new MovieContext())
-            {
                 db.Movies.Add(movie);
                 db.SaveChanges();
-            }
         }
 
-        public static void DeleteMovie(Movie movie)
+        public static void DeleteMovie(Movie movie, MovieContext db)
         {
-            using (var db = new MovieContext())
-            {
                 db.Movies.Remove(movie);
                 db.SaveChanges();
-            }
         }
 
-        public static void UpdateMovie(Movie movie)
+        public static void UpdateMovie(Movie movie, MovieContext db)
         {
-            using (var db = new MovieContext())
-            {
                 db.Movies.Update(movie);
                 db.SaveChanges();
-            }
         }
 
         public static void ListMovies(List<Movie> movies)
@@ -96,11 +76,6 @@ namespace MovieLibrary
                     Console.ReadLine();
                 }
             }
-        }
-
-        public static void TopRatedByOcc()
-        {
-            
         }
     }
 }

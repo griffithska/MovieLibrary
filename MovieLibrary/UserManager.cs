@@ -1,5 +1,4 @@
-﻿//using MovieLibrary.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NLog;
 using NLog.Web;
@@ -21,10 +20,8 @@ namespace MovieLibrary
             UserList = new List<User>();
         }
 
-        public static List<User> UserSearch(int? age, string gender, string zipCode, string occupation)
+        public static List<User> UserSearch(int? age, string gender, string zipCode, string occupation, MovieContext db)
         {
-            using (var db = new MovieContext())
-            {
                 return db.Users
                     .Include(o => o.Occupation)
                     .Where(u => u.Age == age || age == null)
@@ -33,51 +30,18 @@ namespace MovieLibrary
                     .Where(u => u.Occupation.Name.ToLower() == occupation.ToLower() || occupation == "")
                     .OrderBy(u => u.Id)
                     .ToList();
-            }
         }
 
-        public static User UserById(long userId)
+        public static User UserById(long userId, MovieContext db)
         {
-            using (var db = new MovieContext())
-            {
                 return db.Users.Where(u => u.Id == userId).FirstOrDefault();
-            }
         }
 
-        //public static List<Movie> IdSearch(long Id)
-        //{
-        //    using (var db = new MovieContext())
-        //    {
-        //        return db.Movies.Where(x => x.Id == Id).ToList();
-        //    }
-        //}
-
-        public static void AddUser(User user)
+        public static void AddUser(User user, MovieContext db)
         {
-            using (var db = new MovieContext())
-            {
                 db.Users.Add(user);
                 db.SaveChanges();
-            }
         }
-
-        //public static void DeleteMovie(Movie movie)
-        //{
-        //    using (var db = new MovieContext())
-        //    {
-        //        db.Movies.Remove(movie);
-        //        db.SaveChanges();
-        //    }
-        //}
-
-        //public static void UpdateMovie(Movie movie)
-        //{
-        //    using (var db = new MovieContext())
-        //    {
-        //        db.Movies.Update(movie);
-        //        db.SaveChanges();
-        //    }
-        //}
 
         public static void ListUsers(List<User> users)
         {

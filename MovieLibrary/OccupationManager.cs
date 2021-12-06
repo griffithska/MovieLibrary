@@ -1,12 +1,10 @@
-﻿//using MovieLibrary.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NLog;
 using NLog.Web;
 using System.Linq;
 using MovieLibrary.DataModels;
 using MovieLibrary.Context;
-using Microsoft.EntityFrameworkCore;
 
 namespace MovieLibrary
 {
@@ -21,15 +19,12 @@ namespace MovieLibrary
             MovieList = new List<Occupation>();
         }
 
-        public static List<Occupation> OccupationSearch(string name)
+        public static List<Occupation> OccupationSearch(string name, MovieContext db)
         {
-            using (var db = new MovieContext())
-            {
                 return db.Occupations
                     .Where(o => o.Name == name)
                     .OrderBy(o => o.Name)
                     .ToList();
-            }
         }
 
         public static List<long> OccupationIdDump()
@@ -42,15 +37,6 @@ namespace MovieLibrary
                     .ToList();
             }
         }
-
-        //public static List<Movie> IdSearch(long Id)
-        //{
-        //    using (var db = new MovieContext())
-        //    {
-        //        return db.Movies.Where(x => x.Id == Id).ToList();
-        //    }
-        //}
-
         public static void AddOccupation(string occ)
         {
             using (var db = new MovieContext())
@@ -63,24 +49,6 @@ namespace MovieLibrary
                 db.SaveChanges();
             }
         }
-
-        //public static void DeleteMovie(Movie movie)
-        //{
-        //    using (var db = new MovieContext())
-        //    {
-        //        db.Movies.Remove(movie);
-        //        db.SaveChanges();
-        //    }
-        //}
-
-        //public static void UpdateMovie(Movie movie)
-        //{
-        //    using (var db = new MovieContext())
-        //    {
-        //        db.Movies.Update(movie);
-        //        db.SaveChanges();
-        //    }
-        //}
 
         public static void ListOccupations(List<Occupation> occ)
         {

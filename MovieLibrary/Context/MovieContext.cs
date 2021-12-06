@@ -13,6 +13,7 @@ namespace MovieLibrary.Context
         public DbSet<Occupation> Occupations {get;set;}
         public DbSet<User> Users {get;set;}
         public DbSet<UserMovie> UserMovies {get;set;}
+        public DbSet<AgeBracketResult> AgeBracketResults { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

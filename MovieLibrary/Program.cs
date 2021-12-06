@@ -1,11 +1,12 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
 using NLog.Web;
 using MovieLibrary.Context;
 using MovieLibrary.DataModels;
 using System.Linq;
-
+using System.Data;
+using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace MovieLibrary
 {
@@ -42,17 +43,19 @@ namespace MovieLibrary
                 {
                     Console.WriteLine("Enter movie title to search for (press enter to see all):");
                     string title = Console.ReadLine();
-
-                    var movies = MovieManager.TitleSearch(title);
-                    if (movies.Count() > 0)
+                    using (var db = new MovieContext())
                     {
-                        MovieManager.ListMovies(movies);
-                        Console.ReadLine();
-                    }
-                    else
-                    {
-                        Console.WriteLine("No matches found.");
-                        Console.ReadLine();
+                        var movies = MovieManager.TitleSearch(title, db);
+                        if (movies.Count() > 0)
+                        {
+                            MovieManager.ListMovies(movies);
+                            Console.ReadLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("No matches found.");
+                            Console.ReadLine();
+                        }
                     }
                 }
 
@@ -61,88 +64,16 @@ namespace MovieLibrary
                     Movie movie = new Movie();
                     Console.WriteLine("Enter title of movie to add: ");
                     movie.Title = Console.ReadLine();
-                    if (manager.DuplicateTitle(movie.Title))
+                    using (var db = new MovieContext())
                     {
-                        Console.WriteLine("This movie already exists.");
-                        Console.ReadLine();
-                    }
-                    else
-                    {
-                        Console.WriteLine("Enter release date");
-                        //movie.ReleaseDate = DateTime.Parse(Console.ReadLine());
-                        string releaseDateString = Console.ReadLine();
-                        DateTime releaseDate;
-                        if (DateTime.TryParse(releaseDateString, out releaseDate))
+                        if (manager.DuplicateTitle(movie.Title, db))
                         {
-                            movie.ReleaseDate = releaseDate;
+                            Console.WriteLine("This movie already exists.");
+                            Console.ReadLine();
                         }
                         else
                         {
-                            throw new ArgumentException("Not a valid date");
-                        }
-                        try
-                        {
-                            manager.MovieList.Add(movie);
-                            manager.MovieList.ForEach(x => MovieManager.AddMovie(x));
-                            System.Console.WriteLine("Movie Added");
-                            System.Console.WriteLine(movie.Display());
-                            Console.ReadLine();
-                        }
-                        catch (System.Exception)
-                        {
-                            System.Console.WriteLine("Adding movie failed.");
-                            logger.Error("Adding movie failed.", movie);
-                            throw;
-                        }
-
-                    }
-                }
-
-                else if (choice == "3")
-                {
-                    Console.WriteLine("Enter movie title to update:");
-                    string title = Console.ReadLine();
-                    var movies = MovieManager.TitleSearch(title);
-                    Movie movie = new Movie();
-                    if (movies.Count() > 1)
-                    {
-                        Console.WriteLine("Multiple movies matched");
-                        MovieManager.ListMovies(movies);
-                        Console.WriteLine("Enter ID of the movie to update:");
-                        long Id = UInt32.Parse(Console.ReadLine());
-                        movie = movies.Where(x => x.Id == Id).FirstOrDefault();
-                        Console.WriteLine(movie.Display());
-                        Console.ReadLine();
-                    }
-                    else if (movies.Count == 1)
-                    {
-                        movie = movies.FirstOrDefault();
-                        Console.WriteLine(movies.First().Display());
-                    }
-                    else if (movies.Count == 0)
-                    {
-                        Console.WriteLine("No matches found.");
-                        Console.ReadLine();
-                    }
-
-                    if (movie is not null)
-                    {
-                        Console.WriteLine("What would you like to update?");
-                        Console.WriteLine("1) Title");
-                        Console.WriteLine("2) Release Date");
-                        Console.WriteLine("3) Both");
-                        string updChoice = Console.ReadLine();
-                        logger.Info("User choice: {Choice}", updChoice);
-
-                        if (updChoice == "1" || updChoice == "3")
-                        {
-                            Console.WriteLine("Please enter new title:");
-                            movie.Title = Console.ReadLine();
-                        }
-                        if (updChoice == "2" || updChoice == "3")
-                        {
-                            Console.WriteLine("Please enter new release date:");
-                            //movie.ReleaseDate = DateTime.Parse(Console.ReadLine());
+                            Console.WriteLine("Enter release date");
                             string releaseDateString = Console.ReadLine();
                             DateTime releaseDate;
                             if (DateTime.TryParse(releaseDateString, out releaseDate))
@@ -153,10 +84,85 @@ namespace MovieLibrary
                             {
                                 throw new ArgumentException("Not a valid date");
                             }
+                            try
+                            {
+                                manager.MovieList.Add(movie);
+                                manager.MovieList.ForEach(x => MovieManager.AddMovie(x, db));
+                                System.Console.WriteLine("Movie Added");
+                                System.Console.WriteLine(movie.Display());
+                                Console.ReadLine();
+                            }
+                            catch (System.Exception)
+                            {
+                                System.Console.WriteLine("Adding movie failed.");
+                                logger.Error("Adding movie failed.", movie);
+                                throw;
+                            }
                         }
-                        MovieManager.UpdateMovie(movie);
-                        Console.WriteLine(movie.Display());
-                        Console.ReadLine();
+                    }
+                }
+
+                else if (choice == "3")
+                {
+                    Console.WriteLine("Enter movie title to update:");
+                    string title = Console.ReadLine();
+                    using (var db = new MovieContext())
+                    {
+                        var movies = MovieManager.TitleSearch(title, db);
+                        Movie movie = new Movie();
+                        if (movies.Count() > 1)
+                        {
+                            Console.WriteLine("Multiple movies matched");
+                            MovieManager.ListMovies(movies);
+                            Console.WriteLine("Enter ID of the movie to update:");
+                            long Id = UInt32.Parse(Console.ReadLine());
+                            movie = movies.Where(x => x.Id == Id).FirstOrDefault();
+                            Console.WriteLine(movie.Display());
+                            Console.ReadLine();
+                        }
+                        else if (movies.Count == 1)
+                        {
+                            movie = movies.FirstOrDefault();
+                            Console.WriteLine(movies.First().Display());
+                        }
+                        else if (movies.Count == 0)
+                        {
+                            Console.WriteLine("No matches found.");
+                            Console.ReadLine();
+                        }
+
+                        if (movie is not null)
+                        {
+                            Console.WriteLine("What would you like to update?");
+                            Console.WriteLine("1) Title");
+                            Console.WriteLine("2) Release Date");
+                            Console.WriteLine("3) Both");
+                            string updChoice = Console.ReadLine();
+                            logger.Info("User choice: {Choice}", updChoice);
+
+                            if (updChoice == "1" || updChoice == "3")
+                            {
+                                Console.WriteLine("Please enter new title:");
+                                movie.Title = Console.ReadLine();
+                            }
+                            if (updChoice == "2" || updChoice == "3")
+                            {
+                                Console.WriteLine("Please enter new release date:");
+                                string releaseDateString = Console.ReadLine();
+                                DateTime releaseDate;
+                                if (DateTime.TryParse(releaseDateString, out releaseDate))
+                                {
+                                    movie.ReleaseDate = releaseDate;
+                                }
+                                else
+                                {
+                                    throw new ArgumentException("Not a valid date");
+                                }
+                            }
+                            MovieManager.UpdateMovie(movie, db);
+                            Console.WriteLine(movie.Display());
+                            Console.ReadLine();
+                        }
                     }
                 }
 
@@ -164,27 +170,30 @@ namespace MovieLibrary
                 {
                     Console.WriteLine("Enter movie title to delete:");
                     string title = Console.ReadLine();
-                    var movies = MovieManager.TitleSearch(title);
-                    if (movies.Count() > 1)
+                    using (var db = new MovieContext())
                     {
-                        Console.WriteLine("Multiple movies matched");
-                        MovieManager.ListMovies(movies);
-                        Console.WriteLine("Enter ID of the movie to delete:");
-                        long Id = Int64.Parse(Console.ReadLine());
-                        MovieManager.DeleteMovie(movies.Where(x => x.Id == Id).FirstOrDefault());
+                        var movies = MovieManager.TitleSearch(title, db);
+                        if (movies.Count() > 1)
+                        {
+                            Console.WriteLine("Multiple movies matched");
+                            MovieManager.ListMovies(movies);
+                            Console.WriteLine("Enter ID of the movie to delete:");
+                            long Id = Int64.Parse(Console.ReadLine());
+                            MovieManager.DeleteMovie(movies.Where(x => x.Id == Id).FirstOrDefault(), db);
 
-                    }
-                    else if (movies.Count == 1)
-                    {
-                        Console.WriteLine(movies.First().Display());
-                        MovieManager.DeleteMovie(movies.First());
-                        Console.WriteLine("{0} Deleted", movies.First().Title);
-                        Console.ReadLine();
-                    }
-                    else if (movies.Count == 0)
-                    {
-                        Console.WriteLine("No matches found.");
-                        Console.ReadLine();
+                        }
+                        else if (movies.Count == 1)
+                        {
+                            Console.WriteLine(movies.First().Display());
+                            MovieManager.DeleteMovie(movies.First(), db);
+                            Console.WriteLine("{0} Deleted", movies.First().Title);
+                            Console.ReadLine();
+                        }
+                        else if (movies.Count == 0)
+                        {
+                            Console.WriteLine("No matches found.");
+                            Console.ReadLine();
+                        }
                     }
                 }
 
@@ -201,41 +210,47 @@ namespace MovieLibrary
                     Console.WriteLine("Please enter user's occupation: (Press Enter to skip)");
                     string occupation = Console.ReadLine();
 
-                    var users = UserManager.UserSearch(age, gender, zipCode, occupation);
-                    UserManager.ListUsers(users);
+                    using (var db = new MovieContext())
+                    {
+                        var users = UserManager.UserSearch(age, gender, zipCode, occupation, db);
+                        UserManager.ListUsers(users);
+                    }
                     Console.ReadLine();
                 }
                 else if (choice == "6")
                 {
                     User user = new();
-                    //Occupation occ = new();
                     string occ;
 
-                    Console.WriteLine("Please enter user's age:");
-                    string ageString = Console.ReadLine();
-                    user.Age = (long)(long.TryParse(ageString, out long age2) ? (long?)age2 : null);
-                    Console.WriteLine("Please enter user's gender (M/F):");
-                    user.Gender = Console.ReadLine();
-                    Console.WriteLine("Please enter user's Zip Code:");
-                    user.ZipCode = Console.ReadLine();
-                    Console.WriteLine("Please enter user's occupation:");
-                    occ = Console.ReadLine();
+                    using (var db = new MovieContext())
+                    {
 
-                    var occExists = OccupationManager.OccupationSearch(occ);
-                    if (occExists.Count >= 1)
-                    {
+                        Console.WriteLine("Please enter user's age:");
+                        string ageString = Console.ReadLine();
+                        user.Age = (long)(long.TryParse(ageString, out long age2) ? (long?)age2 : null);
+                        Console.WriteLine("Please enter user's gender (M/F):");
+                        user.Gender = Console.ReadLine();
+                        Console.WriteLine("Please enter user's Zip Code:");
+                        user.ZipCode = Console.ReadLine();
+                        Console.WriteLine("Please enter user's occupation:");
+                        occ = Console.ReadLine();
+
+                        var occExists = OccupationManager.OccupationSearch(occ, db);
+                        if (occExists.Count >= 1)
+                        {
+                            Console.WriteLine(occExists.First().Display());
+                            user.Occupation = occExists.First();
+                        }
+                        else
+                        {
+                            OccupationManager.AddOccupation(occ);
+                            occExists = OccupationManager.OccupationSearch(occ, db);
+                            user.Occupation = occExists.First();
+                        }
+                        Console.WriteLine(user.Display());
                         Console.WriteLine(occExists.First().Display());
-                        user.Occupation = occExists.First();
+                        UserManager.AddUser(user, db);
                     }
-                    else
-                    {
-                        OccupationManager.AddOccupation(occ);
-                        occExists = OccupationManager.OccupationSearch(occ);
-                        user.Occupation = occExists.First();
-                    }
-                    Console.WriteLine(user.Display());
-                    Console.WriteLine(occExists.First().Display());
-                    UserManager.AddUser(user);
                     Console.ReadLine();
                 }
                 else if (choice == "7")
@@ -252,59 +267,58 @@ namespace MovieLibrary
                     Console.WriteLine("Please enter user's occupation: (Press Enter to skip)");
                     string occupation = Console.ReadLine();
 
-                    var users = UserManager.UserSearch(age, gender, zipCode, occupation);
-                    UserManager.ListUsers(users);
-                    Console.WriteLine("Enter User ID to use for rating:");
-                    long userId = UInt32.Parse(Console.ReadLine());
-                    var user = UserManager.UserById(userId);
+                    using (var db = new MovieContext())
+                    {
+                        var users = UserManager.UserSearch(age, gender, zipCode, occupation, db);
+                        UserManager.ListUsers(users);
+                        Console.WriteLine("Enter User ID to use for rating:");
+                        long userId = UInt32.Parse(Console.ReadLine());
+                        var user = UserManager.UserById(userId, db);
 
-                    Console.WriteLine("Search for move to rate");
-                    Console.WriteLine("Enter title");
-                    string title = Console.ReadLine();
-                    var movies = MovieManager.TitleSearch(title);
-                    Movie movie = new Movie();
-                    if (movies.Count() > 1)
-                    {
-                        Console.WriteLine("Multiple movies matched");
-                        MovieManager.ListMovies(movies);
-                        Console.WriteLine("Enter ID of the movie to update:");
-                        long Id = UInt32.Parse(Console.ReadLine());
-                        movie = movies.Where(x => x.Id == Id).FirstOrDefault();
-                        Console.WriteLine(movie.Display());
-                        Console.ReadLine();
-                    }
-                    else if (movies.Count == 1)
-                    {
-                        movie = movies.FirstOrDefault();
-                        Console.WriteLine(movies.First().Display());
-                        Console.ReadLine();
-                    }
-                    else if (movies.Count == 0)
-                    {
-                        Console.WriteLine("No matches found.");
-                        Console.ReadLine();
-                    }
-
-                    if (movie is not null)
-                    {
-                        Console.WriteLine("Enter rating (1-5):");
-                        string ratingString = Console.ReadLine();
-                        long rating = (long)(long.TryParse(ratingString, out long rating2) ? (long?)rating2 : null);
-                        var userMovie = new UserMovie()
+                        Console.WriteLine("Search for move to rate");
+                        Console.WriteLine("Enter title");
+                        string title = Console.ReadLine();
+                        var movies = MovieManager.TitleSearch(title, db);
+                        Movie movie = new Movie();
+                        if (movies.Count() > 1)
                         {
-                            Rating = rating,
-                            RatedAt = DateTime.Now
-                        };
-                        var userMovies = new List<UserMovie>();
-                        userMovies.Add(userMovie);
-
-                        userMovie.User = user;
-                        userMovie.Movie = movie;
-
-                        using (var db = new MovieContext())
+                            Console.WriteLine("Multiple movies matched");
+                            MovieManager.ListMovies(movies);
+                            Console.WriteLine("Enter ID of the movie to update:");
+                            long Id = UInt32.Parse(Console.ReadLine());
+                            movie = movies.Where(x => x.Id == Id).FirstOrDefault();
+                            Console.WriteLine(movie.Display());
+                            Console.ReadLine();
+                        }
+                        else if (movies.Count == 1)
                         {
-                            db.UserMovies.Add(userMovie);
-                            db.SaveChanges();
+                            movie = movies.FirstOrDefault();
+                            Console.WriteLine(movies.First().Display());
+                            Console.ReadLine();
+                        }
+                        else if (movies.Count == 0)
+                        {
+                            Console.WriteLine("No matches found.");
+                            Console.ReadLine();
+                        }
+
+                        if (movie is not null)
+                        {
+                            Console.WriteLine("Enter rating (1-5):");
+                            string ratingString = Console.ReadLine();
+                            long rating = (long)(long.TryParse(ratingString, out long rating2) ? (long?)rating2 : null);
+                            var userMovie = new UserMovie()
+                            {
+                                Rating = rating,
+                                RatedAt = DateTime.Now
+                            };
+                            var userMovies = new List<UserMovie>();
+                            userMovies.Add(userMovie);
+
+                            userMovie.User = user;
+                            userMovie.Movie = movie;
+                                db.UserMovies.Add(userMovie);
+                                db.SaveChanges();
                         }
                     }
                 }
@@ -313,7 +327,7 @@ namespace MovieLibrary
                     Console.WriteLine("How would you like ratings displayed?");
                     Console.WriteLine("1) Top Rated by Age Bracket");
                     Console.WriteLine("2) Top Rated by Occupation (at least 5 ratings)");
-                    Console.WriteLine("3) Top Rated by Decade");
+                    Console.WriteLine("3) Top Rated Movies");
                     Console.WriteLine("4) Most Rated Movies");
                     string rChoice = Console.ReadLine();
                     logger.Info("User choice: {Choice}", rChoice);
@@ -321,6 +335,14 @@ namespace MovieLibrary
                     if (rChoice == "1")
                     {
                         Console.WriteLine("Top Rated Movies by Age Bracket:");
+                        Console.WriteLine("{0,-20} {1,-15} {2,-50} {3,-10}", "Age Bracket", "Avg Rating", "Title","Total Ratings");
+                        using (var db = new MovieContext())
+                        {
+                            string sql = "EXEC TopRatedMovieByAgeBracket";
+                            var results = db.AgeBracketResults.FromSqlRaw(sql).ToList();
+                            results.ForEach(x => Console.WriteLine(x.Display()));
+                        }
+                        Console.ReadLine();
                     }
 
                     else if (rChoice == "2")
@@ -377,6 +399,37 @@ namespace MovieLibrary
 
                     else if (rChoice == "3")
                     {
+                        Console.WriteLine("Enter minimun number of ratings to consider:");
+                        long rat;
+                        string ratString = Console.ReadLine();
+                        rat = (long)(long.TryParse(ratString, out long rat2) ? (long?)rat2 : null);
+                        using (var db = new MovieContext())
+                        {
+                            var results = db.UserMovies
+                               .GroupBy(
+                                  um =>
+                                     new
+                                     {
+                                         um.Movie.Title
+                                     }
+                               )
+                               .Select(
+                                  occGroup =>
+                                     new
+                                     {
+                                         Title = occGroup.Key.Title,
+                                         AverageRating = occGroup.Average(x => x.Rating),
+                                         RatingCount = occGroup.Count()
+                                     }
+                               )
+                               .Where(x => (x.RatingCount >= rat))
+                               .OrderByDescending(x => x.AverageRating)
+                               .ThenBy(x => x.Title)
+                               .Take(10)
+                               .ToList();
+                            results.ForEach(x => Console.WriteLine($"{x.Title,-50} {x.RatingCount,-10:0} {x.AverageRating,-10:0.00}"));
+                        }
+                        Console.ReadLine();
 
                     }
 
