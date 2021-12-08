@@ -255,7 +255,6 @@ namespace MovieLibrary
                         var occExists = OccupationManager.OccupationSearch(occ, db);
                         if (occExists.Count >= 1)
                         {
-                            Console.WriteLine(occExists.First().Display());
                             user.Occupation = occExists.First();
                         }
                         else
