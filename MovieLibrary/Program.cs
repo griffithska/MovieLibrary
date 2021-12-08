@@ -50,7 +50,6 @@ namespace MovieLibrary
                         if (movies.Count() > 0)
                         {
                             MovieManager.ListMovies(movies);
-                            Console.ReadLine();
                         }
                         else
                         {
@@ -189,6 +188,8 @@ namespace MovieLibrary
                             long Id = Int64.Parse(Console.ReadLine());
                             logger.Info($"MovieId Entered: {Id}");
                             MovieManager.DeleteMovie(movies.Where(x => x.Id == Id).FirstOrDefault(), db);
+                            Console.WriteLine("{0} Deleted", movies.Where(x => x.Id == Id).FirstOrDefault().Title);
+                            Console.ReadLine();
 
                         }
                         else if (movies.Count == 1)

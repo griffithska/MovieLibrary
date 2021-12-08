@@ -22,7 +22,7 @@ namespace MovieLibrary
 
         public bool DuplicateTitle(string title, MovieContext db)
         {
-                var movies = db.Movies.Where(x => x.Title.ToLower().Contains(title.ToLower())).ToList();
+            var movies = db.Movies.Where(x => x.Title.ToLower() == title.ToLower()).ToList(); //.Contains(title.ToLower())).ToList(); This would have prevented adding remakes or sequels that started with the same name
                 if (movies.Count() > 0)
                 {
                     _logger.Info("Duplicate movie title {Title}", title);
@@ -69,11 +69,19 @@ namespace MovieLibrary
             else
             {
                 Console.WriteLine("{0} movies matched", movies.Count);
+                string stop = "";
                 for (var i = 0; i < movies.Count; i += 10)
                 {
-                    movies.Skip(i).Take(10).ToList().ForEach(x => Console.WriteLine(x.Display()));
-                    Console.WriteLine("Press any key to display next 10 movies");
-                    Console.ReadLine();
+                    if (stop == "")
+                    {
+                        movies.Skip(i).Take(10).ToList().ForEach(x => Console.WriteLine(x.Display()));
+                        Console.WriteLine("Press Enter to display next 10 movies, to stop enter any other value and press Enter");
+                        stop = Console.ReadLine();
+                    }
+                    else 
+                    {
+                        break;
+                    };
                 }
             }
         }
