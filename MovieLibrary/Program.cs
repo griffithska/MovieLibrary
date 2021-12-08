@@ -54,7 +54,7 @@ namespace MovieLibrary
                         else
                         {
                             Console.WriteLine("No matches found.");
-                            Console.ReadLine();
+                            Console.ReadKey();
                         }
                     }
                 }
@@ -70,7 +70,7 @@ namespace MovieLibrary
                         if (manager.DuplicateTitle(movie.Title, db))
                         {
                             Console.WriteLine("This movie already exists.");
-                            Console.ReadLine();
+                            Console.ReadKey();
                         }
                         else
                         {
@@ -92,7 +92,7 @@ namespace MovieLibrary
                                 manager.MovieList.ForEach(x => MovieManager.AddMovie(x, db));
                                 System.Console.WriteLine("Movie Added");
                                 System.Console.WriteLine(movie.Display());
-                                Console.ReadLine();
+                                Console.ReadKey();
                             }
                             catch (System.Exception)
                             {
@@ -122,7 +122,7 @@ namespace MovieLibrary
                             logger.Info($"MovieId Entered: {Id}");
                             movie = movies.Where(x => x.Id == Id).FirstOrDefault();
                             Console.WriteLine(movie.Display());
-                            Console.ReadLine();
+                            Console.ReadKey();
                         }
                         else if (movies.Count == 1)
                         {
@@ -132,7 +132,7 @@ namespace MovieLibrary
                         else if (movies.Count == 0)
                         {
                             Console.WriteLine("No matches found.");
-                            Console.ReadLine();
+                            Console.ReadKey();
                         }
 
                         if (movie is not null)
@@ -167,7 +167,7 @@ namespace MovieLibrary
                             }
                             MovieManager.UpdateMovie(movie, db);
                             Console.WriteLine(movie.Display());
-                            Console.ReadLine();
+                            Console.ReadKey();
                         }
                     }
                 }
@@ -189,7 +189,7 @@ namespace MovieLibrary
                             logger.Info($"MovieId Entered: {Id}");
                             MovieManager.DeleteMovie(movies.Where(x => x.Id == Id).FirstOrDefault(), db);
                             Console.WriteLine("{0} Deleted", movies.Where(x => x.Id == Id).FirstOrDefault().Title);
-                            Console.ReadLine();
+                            Console.ReadKey();
 
                         }
                         else if (movies.Count == 1)
@@ -197,12 +197,12 @@ namespace MovieLibrary
                             Console.WriteLine(movies.First().Display());
                             MovieManager.DeleteMovie(movies.First(), db);
                             Console.WriteLine("{0} Deleted", movies.First().Title);
-                            Console.ReadLine();
+                            Console.ReadKey();
                         }
                         else if (movies.Count == 0)
                         {
                             Console.WriteLine("No matches found.");
-                            Console.ReadLine();
+                            Console.ReadKey();
                         }
                     }
                 }
@@ -229,7 +229,6 @@ namespace MovieLibrary
                         var users = UserManager.UserSearch(age, gender, zipCode, occupation, db);
                         UserManager.ListUsers(users);
                     }
-                    Console.ReadLine();
                 }
                 else if (choice == "6")
                 {
@@ -269,7 +268,7 @@ namespace MovieLibrary
                         Console.WriteLine(occExists.First().Display());
                         UserManager.AddUser(user, db);
                     }
-                    Console.ReadLine();
+                    Console.ReadKey();
                 }
                 else if (choice == "7")
                 {
@@ -322,7 +321,7 @@ namespace MovieLibrary
                         else if (movies.Count == 0)
                         {
                             Console.WriteLine("No matches found.");
-                            Console.ReadLine();
+                            Console.ReadKey();
                         }
 
                         if (movie is not null)
@@ -351,7 +350,7 @@ namespace MovieLibrary
                             Console.Write("Movie: ");
                             Console.WriteLine(movie.Display());
                             Console.WriteLine($"Rating: {userMovie.Rating}");
-                            Console.ReadLine();
+                            Console.ReadKey();
                         }   
                     }
                 }
@@ -369,20 +368,25 @@ namespace MovieLibrary
                     {
                         Console.WriteLine("Top Rated Movies by Age Bracket:");
                         Console.WriteLine("{0,-20} {1,-15} {2,-50} {3,-10}", "Age Bracket", "Avg Rating", "Title","Total Ratings");
+                        string dashes = new string('-', 110);
+                        Console.WriteLine(dashes);
                         using (var db = new MovieContext())
                         {
                             string sql = "EXEC TopRatedMovieByAgeBracket";
                             var results = db.AgeBracketResults.FromSqlRaw(sql).ToList();
                             results.ForEach(x => Console.WriteLine(x.Display()));
                         }
-                        Console.ReadLine();
+                        Console.ReadKey();
                     }
 
                     else if (rChoice == "2")
                     {
                         List<long> occ = OccupationManager.OccupationIdDump();
                         Console.WriteLine("Top Rated Movie by Occupation (movies with at least 5 ratings)");
-                        foreach(long occId in occ)
+                        Console.WriteLine("{0,-15} {1,-15:0.00} {2,-50}", "Occupation", "Average Rating", "Title");
+                        string dashes = new string('-', 80);
+                        Console.WriteLine(dashes);
+                        foreach (long occId in occ)
                         {
                             using (var db = new MovieContext())
                             {
@@ -418,16 +422,16 @@ namespace MovieLibrary
                                         var ocu = dbo.Occupations
                                             .Where(o => o.Id == occId)
                                             .FirstOrDefault();
-                                        Console.WriteLine($"Occupation: {ocu.Name, -15} Not Enough Ratings");
+                                        Console.WriteLine("{0, -15} {1,-30}", ocu.Name, "Not Enough Ratings");
                                     }
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"Occupation: {mov.Occupation,-15} Average Rating: {mov.AverageRating,-5:0.00} Title: {mov.Title,-50}");
+                                    Console.WriteLine($"{mov.Occupation,-15} {mov.AverageRating,-15:0.00} {mov.Title,-50}");
                                 }
                             }
                         }
-                        Console.ReadLine();
+                        Console.ReadKey();
                     }
 
                     else if (rChoice == "3")
@@ -438,6 +442,8 @@ namespace MovieLibrary
                         logger.Info($"Minumum Ratings String Entered: {ratString}");
                         rat = (long)(long.TryParse(ratString, out long rat2) ? (long?)rat2 : null);
                         Console.WriteLine("{0,-50} {1,-10:0} {2,-10:0.00}", "Title", "Ratings", "Avg Rating");
+                        string dashes = new string('-', 80);
+                        Console.WriteLine(dashes);
                         using (var db = new MovieContext())
                         {
                             var results = db.UserMovies
@@ -464,7 +470,7 @@ namespace MovieLibrary
                                .ToList();
                             results.ForEach(x => Console.WriteLine($"{x.Title,-50} {x.RatingCount,-10:0} {x.AverageRating,-10:0.00}"));
                         }
-                        Console.ReadLine();
+                        Console.ReadKey();
 
                     }
 
@@ -472,6 +478,8 @@ namespace MovieLibrary
                     {
                         Console.WriteLine("Movies with the Most Ratings");
                         Console.WriteLine("{0,-50} {1,-10:0} {2,-10:0.00}", "Title", "Ratings", "Avg Rating");
+                        string dashes = new string('-', 80);
+                        Console.WriteLine(dashes);
                         using (var db = new MovieContext())
                         {
                             var results = db.UserMovies
@@ -499,7 +507,7 @@ namespace MovieLibrary
                                .ToList();
                              results.ForEach(x => Console.WriteLine($"{x.Title,-50} {x.RatingCount,-10:0} {x.AverageRating,-10:0.00}"));
                         }
-                        Console.ReadLine();
+                        Console.ReadKey();
                     }
                 }
              } while (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5" || choice == "6" || choice == "7" || choice == "8");

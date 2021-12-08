@@ -57,7 +57,7 @@ namespace MovieLibrary
                 {
                     users.Skip(i).Take(10).ToList().ForEach(x => Console.WriteLine(x.Display()));
                     Console.WriteLine("Press any key to display next 10 users");
-                    Console.ReadLine();
+                    Console.ReadKey();
                 }
             }
         }

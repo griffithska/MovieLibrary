@@ -75,7 +75,7 @@ namespace MovieLibrary
                     if (stop == "")
                     {
                         movies.Skip(i).Take(10).ToList().ForEach(x => Console.WriteLine(x.Display()));
-                        Console.WriteLine("Press Enter to display next 10 movies, to stop enter any other value and press Enter");
+                        Console.WriteLine("Press Enter to display next 10 movies, to stop enter any other value and press Enter.");
                         stop = Console.ReadLine();
                     }
                     else 
